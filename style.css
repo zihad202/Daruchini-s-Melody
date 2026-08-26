@@ -131,3 +131,24 @@ body {
 .volume input {
     width: 100%;
 }
+.upload-section {
+    margin-bottom: 25px;
+}
+
+.upload-section label {
+    display: inline-block;
+    padding: 10px 18px;
+
+    border: 1px solid #444;
+    border-radius: 20px;
+
+    color: white;
+    background: #1b1b1e;
+
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.upload-section input {
+    display: none;
+    }
