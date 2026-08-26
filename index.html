@@ -3,17 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>My Music Player</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="app">
-        <h1>My Music Player</h1>
-        <p>Your personal offline music player</p>
+    <div class="player">
+
+        <div class="cover">
+            <div class="music-icon">♫</div>
+        </div>
+
+        <h1 id="songTitle">No Song Selected</h1>
+
+        <p id="artistName">Your Music Library</p>
+
+        <div class="progress-area">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+
+            <div class="time">
+                <span>0:00</span>
+                <span>0:00</span>
+            </div>
+        </div>
+
+        <div class="controls">
+
+            <button>↶</button>
+
+            <button>⏮</button>
+
+            <button class="play-btn">▶</button>
+
+            <button>⏭</button>
+
+            <button>↷</button>
+
+        </div>
+
+        <div class="volume">
+            <span>🔊</span>
+            <input type="range" min="0" max="100" value="80">
+        </div>
+
     </div>
 
     <script src="app.js"></script>
+
 </body>
 </html>
