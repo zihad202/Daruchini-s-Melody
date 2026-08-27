@@ -152,3 +152,75 @@ body {
 .upload-section input {
     display: none;
     }
+.library {
+    width: 100%;
+    max-width: 420px;
+    padding: 0 25px 40px;
+    margin: 0 auto;
+}
+
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.library-header h2 {
+    font-size: 20px;
+}
+
+#songCount {
+    color: #777;
+    font-size: 13px;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px;
+
+    margin-bottom: 8px;
+
+    background: #18181b;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+}
+
+.song-item:active {
+    transform: scale(0.98);
+}
+
+.song-number {
+    width: 25px;
+    color: #777;
+    font-size: 13px;
+}
+
+.song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-name {
+    font-size: 14px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.song-artist {
+    margin-top: 4px;
+
+    color: #777;
+    font-size: 12px;
+}
+
+.song-play {
+    font-size: 18px;
+}
