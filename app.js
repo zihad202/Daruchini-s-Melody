@@ -1,6 +1,7 @@
 const audioUpload = document.getElementById("audioUpload");
 const audioPlayer = document.getElementById("audioPlayer");
-
+const coverUpload = document.getElementById("coverUpload");
+const saveMusic = document.getElementById("saveMusic");
 const songTitle = document.getElementById("songTitle");
 const artistName = document.getElementById("artistName");
 
@@ -62,22 +63,35 @@ request.onerror = function () {
 // Upload Music
 // ===============================
 
-audioUpload.addEventListener("change", function () {
+saveMusic.addEventListener("click", function () {
 
-    const file = this.files[0];
+    const audioFile = audioUpload.files[0];
+    const coverFile = coverUpload.files[0];
 
-    if (!file) {
+    if (!audioFile) {
+
+        alert("Please choose an audio file.");
+
+        return;
+    }
+
+    if (!coverFile) {
+
+        alert("Please choose a cover image.");
+
         return;
     }
 
 
     const song = {
 
-        name: file.name,
+        name: audioFile.name,
 
-        type: file.type,
+        type: audioFile.type,
 
-        audio: file,
+        audio: audioFile,
+
+        cover: coverFile,
 
         addedAt: Date.now()
 
@@ -97,17 +111,31 @@ audioUpload.addEventListener("change", function () {
 
     addRequest.onsuccess = function (event) {
 
-        console.log("Song saved:", file.name);
+        console.log("Song saved:", audioFile.name);
+
 
         const savedSong = {
+
             ...song,
+
             id: event.target.result
+
         };
 
-        loadSong(savedSong);
-savedSongs.push(savedSong);
 
-renderSongList();
+        savedSongs.push(savedSong);
+
+        renderSongList();
+
+        loadSong(savedSong);
+
+
+        audioUpload.value = "";
+        coverUpload.value = "";
+
+
+        alert("Music saved successfully!");
+
     };
 
 });
