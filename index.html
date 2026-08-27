@@ -1,86 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>My Music Player</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
+
     <div class="player">
+
         <audio id="audioPlayer"></audio>
-<div class="upload-section">
 
-    <label for="audioUpload">🎵 Choose Audio</label>
-    <input
-    type="file"
-    id="audioUpload"
-    accept=".mp3,.m4a,.wav,.ogg,.aac,.webm,audio/mpeg,audio/mp4,audio/wav,audio/ogg,audio/aac,audio/webm"
->
 
-    <label for="coverUpload">🖼️ Choose Cover</label>
-    <input type="file" id="coverUpload" accept="image/*">
+        <!-- Upload Section -->
 
-    <button id="saveMusic">＋ Save Music</button>
+        <div class="upload-section">
 
-<div class="cover">
+            <label for="audioUpload">
+                🎵 Choose Audio
+            </label>
 
-    <img id="coverImage" src="" alt="Cover">
+            <input
+                type="file"
+                id="audioUpload"
+                accept=".mp3,.m4a,.wav,.ogg,.aac,.webm,audio/mpeg,audio/mp4,audio/wav,audio/ogg,audio/aac,audio/webm"
+            >
 
-    <div class="music-icon">♫</div>
 
-</div>
+            <label for="coverUpload">
+                🖼️ Choose Cover
+            </label>
 
-        <h1 id="songTitle">No Song Selected</h1>
+            <input
+                type="file"
+                id="coverUpload"
+                accept="image/*"
+            >
 
-        <p id="artistName">Your Music Library</p>
+
+            <button id="saveMusic">
+                ＋ Save Music
+            </button>
+
+        </div>
+
+
+        <!-- Cover -->
+
+        <div class="cover">
+
+            <img
+                id="coverImage"
+                src=""
+                alt="Cover"
+            >
+
+            <div class="music-icon">
+                ♫
+            </div>
+
+        </div>
+
+
+        <!-- Song Information -->
+
+        <h1 id="songTitle">
+            No Song Selected
+        </h1>
+
+        <p id="artistName">
+            Your Music Library
+        </p>
+
+
+        <!-- Progress -->
 
         <div class="progress-area">
+
             <div class="progress-bar">
+
                 <div class="progress"></div>
+
             </div>
 
+
             <div class="time">
+
                 <span>0:00</span>
+
                 <span>0:00</span>
+
             </div>
+
         </div>
+
+
+        <!-- Controls -->
 
         <div class="controls">
 
-            <button>↶</button>
+            <button>
+                ↶
+            </button>
 
-            <button>⏮</button>
+            <button>
+                ⏮
+            </button>
 
-            <button class="play-btn">▶</button>
+            <button class="play-btn">
+                ▶
+            </button>
 
-            <button>⏭</button>
+            <button>
+                ⏭
+            </button>
 
-            <button>↷</button>
+            <button>
+                ↷
+            </button>
 
         </div>
+
+
+        <!-- Volume -->
 
         <div class="volume">
-            <span>🔊</span>
-            <input type="range" min="0" max="100" value="80">
+
+            <span>
+                🔊
+            </span>
+
+            <input
+                type="range"
+                min="0"
+                max="100"
+                value="80"
+            >
+
         </div>
 
     </div>
-<div class="library">
 
-    <div class="library-header">
-        <h2>My Library</h2>
-        <span id="songCount">0 Songs</span>
+
+    <!-- Music Library -->
+
+    <div class="library">
+
+        <div class="library-header">
+
+            <h2>
+                My Library
+            </h2>
+
+            <span id="songCount">
+                0 Songs
+            </span>
+
+        </div>
+
+
+        <div id="songList"></div>
+
     </div>
 
-    <div id="songList"></div>
 
-</div>
     <script src="app.js"></script>
 
 </body>
+
 </html>
