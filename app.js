@@ -10,7 +10,10 @@ const progress = document.querySelector(".progress");
 
 const timeElements = document.querySelectorAll(".time span");
 const volumeControl = document.querySelector(".volume input");
+const songList = document.getElementById("songList");
+const songCount = document.getElementById("songCount");
 
+let savedSongs = [];
 
 // ===============================
 // IndexedDB Setup
@@ -102,7 +105,9 @@ audioUpload.addEventListener("change", function () {
         };
 
         loadSong(savedSong);
+savedSongs.push(savedSong);
 
+renderSongList();
     };
 
 });
@@ -118,30 +123,25 @@ function loadSavedSongs() {
         return;
     }
 
-
     const transaction =
         db.transaction(["songs"], "readonly");
 
     const store =
         transaction.objectStore("songs");
 
-
     const getAllRequest =
         store.getAll();
 
-
     getAllRequest.onsuccess = function () {
 
-        const songs = getAllRequest.result;
+        savedSongs = getAllRequest.result;
 
-        console.log("Saved songs:", songs);
+        renderSongList();
 
+        if (savedSongs.length > 0) {
 
-        if (songs.length > 0) {
-
-            // Load the latest uploaded song
             const latestSong =
-                songs[songs.length - 1];
+                savedSongs[savedSongs.length - 1];
 
             loadSong(latestSong);
 
@@ -301,5 +301,58 @@ function formatTime(seconds) {
 
     return minutes + ":" +
         String(remainingSeconds).padStart(2, "0");
+
+}
+function renderSongList() {
+
+    songList.innerHTML = "";
+
+    songCount.textContent =
+        savedSongs.length + " Songs";
+
+
+    savedSongs.forEach(function (song, index) {
+
+        const songItem =
+            document.createElement("div");
+
+        songItem.className = "song-item";
+
+
+        songItem.innerHTML = `
+
+            <div class="song-number">
+                ${index + 1}
+            </div>
+
+            <div class="song-info">
+
+                <div class="song-name">
+                    ${song.name}
+                </div>
+
+                <div class="song-artist">
+                    My Library
+                </div>
+
+            </div>
+
+            <div class="song-play">
+                ▶
+            </div>
+
+        `;
+
+
+        songItem.addEventListener("click", function () {
+
+            loadSong(song);
+
+        });
+
+
+        songList.appendChild(songItem);
+
+    });
 
 }
