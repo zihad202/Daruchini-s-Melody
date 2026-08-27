@@ -9,9 +9,49 @@ const progressBar = document.querySelector(".progress-bar");
 const progress = document.querySelector(".progress");
 
 const timeElements = document.querySelectorAll(".time span");
-
 const volumeControl = document.querySelector(".volume input");
 
+
+// ===============================
+// IndexedDB Setup
+// ===============================
+
+let db;
+
+const request = indexedDB.open("MyMusicPlayerDB", 1);
+
+request.onupgradeneeded = function (event) {
+
+    db = event.target.result;
+
+    if (!db.objectStoreNames.contains("songs")) {
+
+        db.createObjectStore("songs", {
+            keyPath: "id",
+            autoIncrement: true
+        });
+
+    }
+};
+
+request.onsuccess = function (event) {
+
+    db = event.target.result;
+
+    console.log("Music database ready");
+
+};
+
+request.onerror = function () {
+
+    console.error("Database error");
+
+};
+
+
+// ===============================
+// Upload Music
+// ===============================
 
 audioUpload.addEventListener("change", function () {
 
@@ -21,19 +61,68 @@ audioUpload.addEventListener("change", function () {
         return;
     }
 
-    const audioURL = URL.createObjectURL(file);
+    const song = {
 
-    audioPlayer.src = audioURL;
+        name: file.name,
 
-    songTitle.textContent = file.name;
-    artistName.textContent = "My Library";
+        type: file.type,
 
-    audioPlayer.load();
+        audio: file,
+
+        addedAt: Date.now()
+
+    };
+
+
+    const transaction = db.transaction(
+        ["songs"],
+        "readwrite"
+    );
+
+    const store = transaction.objectStore("songs");
+
+    store.add(song);
+
+
+    transaction.oncomplete = function () {
+
+        console.log("Song saved offline:", file.name);
+
+        loadSong(song);
+
+    };
 
 });
 
 
+// ===============================
+// Load Song
+// ===============================
+
+function loadSong(song) {
+
+    const audioURL = URL.createObjectURL(song.audio);
+
+    audioPlayer.src = audioURL;
+
+    songTitle.textContent = song.name;
+
+    artistName.textContent = "My Library";
+
+    audioPlayer.load();
+
+}
+
+
+// ===============================
+// Play / Pause
+// ===============================
+
 playButton.addEventListener("click", function () {
+
+    if (!audioPlayer.src) {
+        return;
+    }
 
     if (audioPlayer.paused) {
 
@@ -52,6 +141,10 @@ playButton.addEventListener("click", function () {
 });
 
 
+// ===============================
+// Progress
+// ===============================
+
 audioPlayer.addEventListener("timeupdate", function () {
 
     if (!audioPlayer.duration) {
@@ -59,9 +152,11 @@ audioPlayer.addEventListener("timeupdate", function () {
     }
 
     const percentage =
-        (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        (audioPlayer.currentTime /
+        audioPlayer.duration) * 100;
 
     progress.style.width = percentage + "%";
+
 
     timeElements[0].textContent =
         formatTime(audioPlayer.currentTime);
@@ -71,6 +166,10 @@ audioPlayer.addEventListener("timeupdate", function () {
 
 });
 
+
+// ===============================
+// Seek
+// ===============================
 
 progressBar.addEventListener("click", function (event) {
 
@@ -82,20 +181,27 @@ progressBar.addEventListener("click", function (event) {
 
     const clickX = event.offsetX;
 
-    const newTime =
+    audioPlayer.currentTime =
         (clickX / width) * audioPlayer.duration;
-
-    audioPlayer.currentTime = newTime;
 
 });
 
+
+// ===============================
+// Volume
+// ===============================
 
 volumeControl.addEventListener("input", function () {
 
-    audioPlayer.volume = this.value / 100;
+    audioPlayer.volume =
+        this.value / 100;
 
 });
 
+
+// ===============================
+// Song End
+// ===============================
 
 audioPlayer.addEventListener("ended", function () {
 
@@ -104,17 +210,23 @@ audioPlayer.addEventListener("ended", function () {
 });
 
 
+// ===============================
+// Time Format
+// ===============================
+
 function formatTime(seconds) {
 
     if (isNaN(seconds)) {
         return "0:00";
     }
 
-    const minutes = Math.floor(seconds / 60);
+    const minutes =
+        Math.floor(seconds / 60);
 
     const remainingSeconds =
         Math.floor(seconds % 60);
 
     return minutes + ":" +
         String(remainingSeconds).padStart(2, "0");
-    }
+
+        }
