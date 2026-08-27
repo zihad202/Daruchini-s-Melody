@@ -32,7 +32,9 @@ request.onupgradeneeded = function (event) {
         });
 
     }
+
 };
+
 
 request.onsuccess = function (event) {
 
@@ -40,7 +42,11 @@ request.onsuccess = function (event) {
 
     console.log("Music database ready");
 
+    // Load saved songs after refresh
+    loadSavedSongs();
+
 };
+
 
 request.onerror = function () {
 
@@ -61,6 +67,7 @@ audioUpload.addEventListener("change", function () {
         return;
     }
 
+
     const song = {
 
         name: file.name,
@@ -74,25 +81,75 @@ audioUpload.addEventListener("change", function () {
     };
 
 
-    const transaction = db.transaction(
-        ["songs"],
-        "readwrite"
-    );
+    const transaction =
+        db.transaction(["songs"], "readwrite");
 
-    const store = transaction.objectStore("songs");
-
-    store.add(song);
+    const store =
+        transaction.objectStore("songs");
 
 
-    transaction.oncomplete = function () {
+    const addRequest =
+        store.add(song);
 
-        console.log("Song saved offline:", file.name);
 
-        loadSong(song);
+    addRequest.onsuccess = function (event) {
+
+        console.log("Song saved:", file.name);
+
+        const savedSong = {
+            ...song,
+            id: event.target.result
+        };
+
+        loadSong(savedSong);
 
     };
 
 });
+
+
+// ===============================
+// Load Saved Songs
+// ===============================
+
+function loadSavedSongs() {
+
+    if (!db) {
+        return;
+    }
+
+
+    const transaction =
+        db.transaction(["songs"], "readonly");
+
+    const store =
+        transaction.objectStore("songs");
+
+
+    const getAllRequest =
+        store.getAll();
+
+
+    getAllRequest.onsuccess = function () {
+
+        const songs = getAllRequest.result;
+
+        console.log("Saved songs:", songs);
+
+
+        if (songs.length > 0) {
+
+            // Load the latest uploaded song
+            const latestSong =
+                songs[songs.length - 1];
+
+            loadSong(latestSong);
+
+        }
+
+    };
+
+}
 
 
 // ===============================
@@ -101,7 +158,8 @@ audioUpload.addEventListener("change", function () {
 
 function loadSong(song) {
 
-    const audioURL = URL.createObjectURL(song.audio);
+    const audioURL =
+        URL.createObjectURL(song.audio);
 
     audioPlayer.src = audioURL;
 
@@ -110,6 +168,8 @@ function loadSong(song) {
     artistName.textContent = "My Library";
 
     audioPlayer.load();
+
+    playButton.textContent = "▶";
 
 }
 
@@ -123,6 +183,7 @@ playButton.addEventListener("click", function () {
     if (!audioPlayer.src) {
         return;
     }
+
 
     if (audioPlayer.paused) {
 
@@ -151,15 +212,19 @@ audioPlayer.addEventListener("timeupdate", function () {
         return;
     }
 
+
     const percentage =
         (audioPlayer.currentTime /
         audioPlayer.duration) * 100;
 
-    progress.style.width = percentage + "%";
+
+    progress.style.width =
+        percentage + "%";
 
 
     timeElements[0].textContent =
         formatTime(audioPlayer.currentTime);
+
 
     timeElements[1].textContent =
         formatTime(audioPlayer.duration);
@@ -177,12 +242,17 @@ progressBar.addEventListener("click", function (event) {
         return;
     }
 
-    const width = this.clientWidth;
 
-    const clickX = event.offsetX;
+    const width =
+        this.clientWidth;
+
+    const clickX =
+        event.offsetX;
+
 
     audioPlayer.currentTime =
-        (clickX / width) * audioPlayer.duration;
+        (clickX / width) *
+        audioPlayer.duration;
 
 });
 
@@ -220,13 +290,16 @@ function formatTime(seconds) {
         return "0:00";
     }
 
+
     const minutes =
         Math.floor(seconds / 60);
+
 
     const remainingSeconds =
         Math.floor(seconds % 60);
 
+
     return minutes + ":" +
         String(remainingSeconds).padStart(2, "0");
 
-        }
+}
