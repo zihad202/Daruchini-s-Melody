@@ -4,7 +4,8 @@ const coverUpload = document.getElementById("coverUpload");
 const saveMusic = document.getElementById("saveMusic");
 const songTitle = document.getElementById("songTitle");
 const artistName = document.getElementById("artistName");
-
+const coverImage = document.getElementById("coverImage");
+const musicIcon = document.querySelector(".music-icon");
 const playButton = document.querySelector(".play-btn");
 const progressBar = document.querySelector(".progress-bar");
 const progress = document.querySelector(".progress");
@@ -194,7 +195,24 @@ function loadSong(song) {
     songTitle.textContent = song.name;
 
     artistName.textContent = "My Library";
+if (song.cover) {
 
+    const coverURL =
+        URL.createObjectURL(song.cover);
+
+    coverImage.src = coverURL;
+
+    coverImage.style.display = "block";
+
+    musicIcon.style.display = "none";
+
+} else {
+
+    coverImage.style.display = "none";
+
+    musicIcon.style.display = "block";
+
+}
     audioPlayer.load();
 
     playButton.textContent = "▶";
