@@ -1,5 +1,22 @@
 const audioUpload = document.getElementById("audioUpload");
 const audioPlayer = document.getElementById("audioPlayer");
+const supportedExtensions = [
+    "mp3",
+    "m4a",
+    "wav",
+    "ogg",
+    "aac",
+    "webm"
+];
+
+function getFileExtension(fileName) {
+
+    return fileName
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+}
 const coverUpload = document.getElementById("coverUpload");
 const saveMusic = document.getElementById("saveMusic");
 const songTitle = document.getElementById("songTitle");
@@ -68,7 +85,49 @@ saveMusic.addEventListener("click", function () {
 
     const audioFile = audioUpload.files[0];
     const coverFile = coverUpload.files[0];
+if (audioFile) {
 
+        const extension =
+            getFileExtension(audioFile.name);
+
+        if (!supportedExtensions.includes(extension)) {
+
+            alert(
+                "This audio format is not supported.\n\n" +
+                "Supported formats: MP3, M4A, WAV, OGG, AAC, WebM"
+            );
+
+            return;
+        }
+
+
+        const testAudio =
+            document.createElement("audio");
+
+        const fileURL =
+            URL.createObjectURL(audioFile);
+
+        const canPlay =
+            testAudio.canPlayType(audioFile.type);
+
+
+        if (
+            canPlay === "" &&
+            extension !== "m4a"
+        ) {
+
+            URL.revokeObjectURL(fileURL);
+
+            alert(
+                "Your browser may not be able to play this audio format."
+            );
+
+            return;
+        }
+
+        URL.revokeObjectURL(fileURL);
+
+}
     if (!audioFile) {
 
         alert("Please choose an audio file.");
