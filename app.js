@@ -154,7 +154,7 @@ if (audioFile) {
         cover: coverFile,
 
         addedAt: Date.now()
-
+      favorite: false
     };
 
 
@@ -424,40 +424,292 @@ function renderSongList() {
         songItem.className = "song-item";
 
 
-        songItem.innerHTML = `
+        // Cover
+        if (song.cover) {
 
-            <div class="song-number">
-                ${index + 1}
-            </div>
+            const cover =
+                document.createElement("img");
 
-            <div class="song-info">
+            cover.className = "song-cover";
 
-                <div class="song-name">
-                    ${song.name}
-                </div>
+            cover.src =
+                URL.createObjectURL(song.cover);
 
-                <div class="song-artist">
-                    My Library
-                </div>
+            cover.alt = song.name;
 
-            </div>
+            songItem.appendChild(cover);
 
-            <div class="song-play">
-                ▶
-            </div>
+        } else {
 
-        `;
+            const placeholder =
+                document.createElement("div");
+
+            placeholder.className =
+                "song-cover-placeholder";
+
+            placeholder.textContent = "♫";
+
+            songItem.appendChild(placeholder);
+
+        }
 
 
-        songItem.addEventListener("click", function () {
+        // Song information
+        const info =
+            document.createElement("div");
 
-            loadSong(song);
+        info.className = "song-info";
 
-        });
+
+        const name =
+            document.createElement("div");
+
+        name.className = "song-name";
+
+        name.textContent = song.name;
+
+
+        const artist =
+            document.createElement("div");
+
+        artist.className = "song-artist";
+
+        artist.textContent =
+            "My Library";
+
+
+        info.appendChild(name);
+
+        info.appendChild(artist);
+
+
+        // Actions
+        const actions =
+            document.createElement("div");
+
+        actions.className = "song-actions";
+
+
+        // Favorite button
+        const favoriteButton =
+            document.createElement("button");
+
+        favoriteButton.className =
+            "favorite-btn";
+
+
+        favoriteButton.textContent =
+            song.favorite ? "♥" : "♡";
+
+
+        if (song.favorite) {
+
+            favoriteButton.classList.add("active");
+
+        }
+
+
+        favoriteButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                toggleFavorite(song.id);
+
+            }
+        );
+
+
+        // Play button
+        const playButtonSmall =
+            document.createElement("button");
+
+        playButtonSmall.textContent = "▶";
+
+
+        playButtonSmall.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                loadSong(song);
+
+                audioPlayer.play();
+
+                document.querySelector(
+                    ".play-btn"
+                ).textContent = "❚❚";
+
+            }
+        );
+
+
+        // Delete button
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.className =
+            "delete-btn";
+
+        deleteButton.textContent = "🗑";
+
+
+        deleteButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                deleteSong(song.id);
+
+            }
+        );
+
+
+        actions.appendChild(favoriteButton);
+
+        actions.appendChild(playButtonSmall);
+
+        actions.appendChild(deleteButton);
+
+
+        songItem.appendChild(info);
+
+        songItem.appendChild(actions);
+
+
+        // Click the whole item to load song
+        songItem.addEventListener(
+            "click",
+            function () {
+
+                loadSong(song);
+
+            }
+        );
 
 
         songList.appendChild(songItem);
 
     });
+
+}
+function toggleFavorite(songId) {
+
+    const song =
+        savedSongs.find(
+            item => item.id === songId
+        );
+
+
+    if (!song) {
+        return;
+    }
+
+
+    song.favorite =
+        !song.favorite;
+
+
+    const transaction =
+        db.transaction(
+            ["songs"],
+            "readwrite"
+        );
+
+
+    const store =
+        transaction.objectStore("songs");
+
+
+    store.put(song);
+
+
+    transaction.oncomplete = function () {
+
+        renderSongList();
+
+    };
+
+}
+function deleteSong(songId) {
+
+    const song =
+        savedSongs.find(
+            item => item.id === songId
+        );
+
+
+    if (!song) {
+        return;
+    }
+
+
+    const confirmDelete =
+        confirm(
+            "Delete \"" +
+            song.name +
+            "\" from your library?"
+        );
+
+
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    const transaction =
+        db.transaction(
+            ["songs"],
+            "readwrite"
+        );
+
+
+    const store =
+        transaction.objectStore("songs");
+
+
+    store.delete(songId);
+
+
+    transaction.oncomplete = function () {
+
+        savedSongs =
+            savedSongs.filter(
+                item => item.id !== songId
+            );
+
+
+        renderSongList();
+
+
+        // If deleted song is currently playing
+        if (
+            songTitle.textContent === song.name
+        ) {
+
+            audioPlayer.pause();
+
+            audioPlayer.src = "";
+
+            songTitle.textContent =
+                "No Song Selected";
+
+            artistName.textContent =
+                "Your Music Library";
+
+            progress.style.width = "0%";
+
+            timeElements[0].textContent = "0:00";
+
+            timeElements[1].textContent = "0:00";
+
+            playButton.textContent = "▶";
+
+        }
+
+    };
 
 }
