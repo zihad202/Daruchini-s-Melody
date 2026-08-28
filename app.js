@@ -48,7 +48,13 @@ const volumeControl =
 
 const songList =
     document.getElementById("songList");
+const searchInput =
+    document.getElementById("searchInput");
 
+const favoriteFilter =
+    document.getElementById("favoriteFilter");
+
+let showFavoritesOnly = false;
 const songCount =
     document.getElementById("songCount");
 
@@ -717,16 +723,45 @@ audioPlayer.addEventListener(
 
 function renderSongList() {
 
-    songList.innerHTML =
-        "";
+    songList.innerHTML = "";
+
+
+    const searchText =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const filteredSongs =
+        savedSongs.filter(
+            function (song) {
+
+                const matchesSearch =
+                    song.name
+                        .toLowerCase()
+                        .includes(searchText);
+
+
+                const matchesFavorite =
+                    !showFavoritesOnly ||
+                    song.favorite === true;
+
+
+                return (
+                    matchesSearch &&
+                    matchesFavorite
+                );
+
+            }
+        );
 
 
     songCount.textContent =
-        savedSongs.length +
+        filteredSongs.length +
         " Songs";
 
 
-    savedSongs.forEach(
+    filteredSongs.forEach(
         function (song, index) {
 
             const songItem =
@@ -1510,6 +1545,50 @@ shuffleButton.addEventListener(
             );
 
         }
+
+    }
+);
+
+        searchInput.addEventListener(
+    "input",
+    function () {
+
+        renderSongList();
+
+    }
+);
+            favoriteFilter.addEventListener(
+    "click",
+    function () {
+
+        showFavoritesOnly =
+            !showFavoritesOnly;
+
+
+        if (showFavoritesOnly) {
+
+            favoriteFilter.textContent =
+                "♥ Favorites";
+
+            favoriteFilter.classList.add(
+                "active"
+            );
+
+        }
+
+        else {
+
+            favoriteFilter.textContent =
+                "♡ Favorites";
+
+            favoriteFilter.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        renderSongList();
 
     }
 );
