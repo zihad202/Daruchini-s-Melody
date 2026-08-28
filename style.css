@@ -529,3 +529,71 @@ body {
 #repeatBtn {
     font-size: 19px;
 }
+
+.library-tools {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-bottom: 15px;
+
+}
+
+
+#searchInput {
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    border: 1px solid #333;
+
+    border-radius: 14px;
+
+    outline: none;
+
+    background: #18181b;
+
+    color: white;
+
+    font-size: 14px;
+
+}
+
+
+#searchInput::placeholder {
+
+    color: #777;
+
+}
+
+
+#favoriteFilter {
+
+    padding: 0 14px;
+
+    border: 1px solid #333;
+
+    border-radius: 14px;
+
+    background: #18181b;
+
+    color: white;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+}
+
+
+#favoriteFilter.active {
+
+    background: white;
+
+    color: black;
+
+}
