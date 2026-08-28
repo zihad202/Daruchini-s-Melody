@@ -520,3 +520,12 @@ body {
     color: #888 !important;
 
 }
+
+#shuffleBtn.active {
+    color: #ffffff;
+    transform: scale(1.15);
+}
+
+#repeatBtn {
+    font-size: 19px;
+}
