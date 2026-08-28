@@ -29,6 +29,11 @@ const previousButton =
 
 const nextButton =
     document.getElementById("nextBtn");
+const repeatButton =
+    document.getElementById("repeatBtn");
+
+const shuffleButton =
+    document.getElementById("shuffleBtn");
 const progressBar =
     document.querySelector(".progress-bar");
 
@@ -53,7 +58,9 @@ let savedSongs = [];
 let db;
 
 let currentSongId = null;
+let repeatMode = "off";
 
+let shuffleMode = false;
 let currentAudioURL = null;
 
 let currentCoverURL = null;
@@ -681,6 +688,24 @@ audioPlayer.addEventListener(
     "ended",
     function () {
 
+        /* Repeat One */
+
+        if (repeatMode === "one") {
+
+            audioPlayer.currentTime = 0;
+
+            audioPlayer.play();
+
+            playButton.textContent =
+                "❚❚";
+
+            return;
+
+        }
+
+
+        /* Repeat Off / Repeat All */
+
         playNextSong();
 
     }
@@ -1224,6 +1249,56 @@ function playNextSong() {
     }
 
 
+    /* Shuffle */
+
+    if (shuffleMode) {
+
+        if (savedSongs.length === 1) {
+
+            loadSong(savedSongs[0]);
+
+            audioPlayer.play();
+
+            playButton.textContent = "❚❚";
+
+            return;
+
+        }
+
+
+        let randomIndex;
+
+        do {
+
+            randomIndex =
+                Math.floor(
+                    Math.random() *
+                    savedSongs.length
+                );
+
+        } while (
+            savedSongs[randomIndex].id ===
+            currentSongId
+        );
+
+
+        const randomSong =
+            savedSongs[randomIndex];
+
+
+        loadSong(randomSong);
+
+        audioPlayer.play();
+
+        playButton.textContent = "❚❚";
+
+        return;
+
+    }
+
+
+    /* Normal Next */
+
     let currentIndex =
         savedSongs.findIndex(
             function (song) {
@@ -1247,7 +1322,7 @@ function playNextSong() {
     }
 
 
-    /* If last song, go to first song */
+    /* Repeat All / Playlist Loop */
 
     if (
         currentIndex >=
@@ -1265,9 +1340,7 @@ function playNextSong() {
 
     loadSong(nextSong);
 
-
     audioPlayer.play();
-
 
     playButton.textContent =
         "❚❚";
@@ -1360,6 +1433,83 @@ previousButton.addEventListener(
     function () {
 
         playPreviousSong();
+
+    }
+);
+
+/* ===============================
+   Repeat Mode
+=============================== */
+
+repeatButton.addEventListener(
+    "click",
+    function () {
+
+        if (repeatMode === "off") {
+
+            repeatMode = "one";
+
+            repeatButton.textContent =
+                "🔂";
+
+        }
+
+        else if (
+            repeatMode === "one"
+        ) {
+
+            repeatMode = "all";
+
+            repeatButton.textContent =
+                "🔁";
+
+        }
+
+        else {
+
+            repeatMode = "off";
+
+            repeatButton.textContent =
+                "↶";
+
+        }
+
+    }
+);
+
+/* ===============================
+   Shuffle
+=============================== */
+
+shuffleButton.addEventListener(
+    "click",
+    function () {
+
+        shuffleMode =
+            !shuffleMode;
+
+
+        if (shuffleMode) {
+
+            shuffleButton.textContent =
+                "🔀";
+
+            shuffleButton.classList.add(
+                "active"
+            );
+
+        }
+
+        else {
+
+            shuffleButton.textContent =
+                "🔀";
+
+            shuffleButton.classList.remove(
+                "active"
+            );
+
+        }
 
     }
 );
