@@ -24,7 +24,11 @@ const musicIcon =
 
 const playButton =
     document.querySelector(".play-btn");
+const previousButton =
+    document.getElementById("previousBtn");
 
+const nextButton =
+    document.getElementById("nextBtn");
 const progressBar =
     document.querySelector(".progress-bar");
 
@@ -677,12 +681,10 @@ audioPlayer.addEventListener(
     "ended",
     function () {
 
-        playButton.textContent =
-            "▶";
+        playNextSong();
 
     }
 );
-
 
 /* ===============================
    Render Library
@@ -1208,3 +1210,156 @@ function formatTime(seconds) {
     );
 
                     }
+
+/* ===============================
+   Next / Previous
+=============================== */
+
+function playNextSong() {
+
+    if (savedSongs.length === 0) {
+
+        return;
+
+    }
+
+
+    let currentIndex =
+        savedSongs.findIndex(
+            function (song) {
+
+                return song.id === currentSongId;
+
+            }
+        );
+
+
+    if (currentIndex === -1) {
+
+        currentIndex = 0;
+
+    }
+
+    else {
+
+        currentIndex++;
+
+    }
+
+
+    /* If last song, go to first song */
+
+    if (
+        currentIndex >=
+        savedSongs.length
+    ) {
+
+        currentIndex = 0;
+
+    }
+
+
+    const nextSong =
+        savedSongs[currentIndex];
+
+
+    loadSong(nextSong);
+
+
+    audioPlayer.play();
+
+
+    playButton.textContent =
+        "❚❚";
+
+}
+
+
+/* ===============================
+   Previous Song
+=============================== */
+
+function playPreviousSong() {
+
+    if (savedSongs.length === 0) {
+
+        return;
+
+    }
+
+
+    let currentIndex =
+        savedSongs.findIndex(
+            function (song) {
+
+                return song.id === currentSongId;
+
+            }
+        );
+
+
+    if (currentIndex === -1) {
+
+        currentIndex = 0;
+
+    }
+
+    else {
+
+        currentIndex--;
+
+    }
+
+
+    /* If first song, go to last song */
+
+    if (currentIndex < 0) {
+
+        currentIndex =
+            savedSongs.length - 1;
+
+    }
+
+
+    const previousSong =
+        savedSongs[currentIndex];
+
+
+    loadSong(previousSong);
+
+
+    audioPlayer.play();
+
+
+    playButton.textContent =
+        "❚❚";
+
+}
+
+
+/* ===============================
+   Next Button
+=============================== */
+
+nextButton.addEventListener(
+    "click",
+    function () {
+
+        playNextSong();
+
+    }
+);
+
+
+/* ===============================
+   Previous Button
+=============================== */
+
+previousButton.addEventListener(
+    "click",
+    function () {
+
+        playPreviousSong();
+
+    }
+);
