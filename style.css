@@ -597,3 +597,7 @@ body {
     color: black;
 
 }
+
+.edit-btn {
+    color: white !important;
+}
