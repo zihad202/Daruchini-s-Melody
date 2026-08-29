@@ -236,25 +236,21 @@ saveMusic.addEventListener(
 
         const song = {
 
-            name:
-                audioFile.name,
+    name: audioFile.name,
 
-            type:
-                audioFile.type,
+    artist: "My Library",
 
-            audio:
-                audioFile,
+    type: audioFile.type,
 
-            cover:
-                coverFile,
+    audio: audioFile,
 
-            addedAt:
-                Date.now(),
+    cover: coverFile,
 
-            favorite:
-                false
+    addedAt: Date.now(),
 
-        };
+    favorite: false
+
+};
 
 
         /* Save to IndexedDB */
@@ -374,20 +370,30 @@ function loadSavedSongs() {
             /* Old songs compatibility */
 
             savedSongs.forEach(
-                function (song) {
+    function (song) {
 
-                    if (
-                        typeof song.favorite !==
-                        "boolean"
-                    ) {
+        if (
+            typeof song.favorite !==
+            "boolean"
+        ) {
 
-                        song.favorite =
-                            false;
+            song.favorite =
+                false;
 
-                    }
+        }
 
-                }
-            );
+
+        if (
+            !song.artist
+        ) {
+
+            song.artist =
+                "My Library";
+
+        }
+
+    }
+);
 
 
             renderSongList();
@@ -484,8 +490,7 @@ function loadSong(song) {
 
 
     artistName.textContent =
-        "My Library";
-
+    song.artist || "My Library";
 
     /* Cover */
 
@@ -963,6 +968,33 @@ function renderSongList() {
                 }
             );
 
+/* Edit */
+
+const editButton =
+    document.createElement(
+        "button"
+    );
+
+
+editButton.className =
+    "edit-btn";
+
+
+editButton.textContent =
+    "✏️";
+
+
+editButton.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        editSong(song.id);
+
+    }
+);
+
 
             /* Delete */
 
@@ -996,18 +1028,20 @@ function renderSongList() {
 
 
             actions.appendChild(
-                favoriteButton
-            );
+    favoriteButton
+);
 
+actions.appendChild(
+    editButton
+);
 
-            actions.appendChild(
-                playButtonSmall
-            );
+actions.appendChild(
+    playButtonSmall
+);
 
-
-            actions.appendChild(
-                deleteButton
-            );
+actions.appendChild(
+    deleteButton
+);
 
 
             songItem.appendChild(
@@ -1592,3 +1626,129 @@ shuffleButton.addEventListener(
 
     }
 );
+
+/* ===============================
+   Edit Song
+=============================== */
+
+function editSong(songId) {
+
+    const song =
+        savedSongs.find(
+            function (item) {
+
+                return item.id === songId;
+
+            }
+        );
+
+
+    if (!song) {
+
+        return;
+
+    }
+
+
+    const newName =
+        prompt(
+            "Enter song name:",
+            song.name
+        );
+
+
+    if (
+        newName === null
+    ) {
+
+        return;
+
+    }
+
+
+    const cleanName =
+        newName.trim();
+
+
+    if (
+        cleanName === ""
+    ) {
+
+        alert(
+            "Song name cannot be empty."
+        );
+
+        return;
+
+    }
+
+
+    const newArtist =
+        prompt(
+            "Enter artist name:",
+            song.artist ||
+            "My Library"
+        );
+
+
+    if (
+        newArtist === null
+    ) {
+
+        return;
+
+    }
+
+
+    const cleanArtist =
+        newArtist.trim();
+
+
+    song.name =
+        cleanName;
+
+
+    song.artist =
+        cleanArtist ||
+        "My Library";
+
+
+    const transaction =
+        db.transaction(
+            ["songs"],
+            "readwrite"
+        );
+
+
+    const store =
+        transaction.objectStore(
+            "songs"
+        );
+
+
+    store.put(song);
+
+
+    transaction.oncomplete =
+        function () {
+
+            renderSongList();
+
+
+            if (
+                currentSongId ===
+                songId
+            ) {
+
+                songTitle.textContent =
+                    song.name;
+
+
+                artistName.textContent =
+                    song.artist;
+
+            }
+
+        };
+
+}
