@@ -18,7 +18,8 @@ const artistName =
 
 const coverImage =
     document.getElementById("coverImage");
-
+const cover =
+    document.querySelector(".cover");
 const musicIcon =
     document.querySelector(".music-icon");
 
@@ -564,6 +565,7 @@ currentSongIndex =
 
 }
 
+updatePlayingSong();
 
 /* ===============================
    Play / Pause
@@ -588,7 +590,7 @@ playButton.addEventListener(
 
             playButton.textContent =
                 "❚❚";
-
+updatePlayingSong();
         }
 
         else {
@@ -597,7 +599,7 @@ playButton.addEventListener(
 
             playButton.textContent =
                 "▶";
-
+updatePlayingSong();
         }
 
     }
@@ -1791,5 +1793,99 @@ function editSong(songId) {
             }
 
         };
+
+}
+
+/* ===============================
+   Update Playing Song
+=============================== */
+
+function updatePlayingSong() {
+
+    const allSongItems =
+        document.querySelectorAll(
+            ".song-item"
+        );
+
+
+    allSongItems.forEach(
+        function (item) {
+
+            item.classList.remove(
+                "playing"
+            );
+
+        }
+    );
+
+
+    const currentSong =
+        savedSongs.find(
+            function (song) {
+
+                return song.id ===
+                    currentSongId;
+
+            }
+        );
+
+
+    if (!currentSong) {
+
+        cover.classList.remove(
+            "playing"
+        );
+
+        return;
+
+    }
+
+
+    /* Find current song in Library */
+
+    allSongItems.forEach(
+        function (item) {
+
+            const nameElement =
+                item.querySelector(
+                    ".song-name"
+                );
+
+
+            if (
+                nameElement &&
+                nameElement.textContent ===
+                    currentSong.name
+            ) {
+
+                item.classList.add(
+                    "playing"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* Cover animation */
+
+    if (
+        !audioPlayer.paused
+    ) {
+
+        cover.classList.add(
+            "playing"
+        );
+
+    }
+
+    else {
+
+        cover.classList.remove(
+            "playing"
+        );
+
+    }
 
 }
