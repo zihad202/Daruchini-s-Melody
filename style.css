@@ -704,3 +704,55 @@ body {
     }
 
 }
+
+/* ===============================
+   Sleep Timer
+=============================== */
+
+.sleep-timer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 20px;
+
+    padding: 12px 14px;
+
+    background: #18181b;
+
+    border: 1px solid #29292d;
+
+    border-radius: 14px;
+
+    font-size: 13px;
+
+}
+
+
+.sleep-timer span {
+
+    color: #aaa;
+
+}
+
+
+.sleep-timer select {
+
+    border: none;
+
+    outline: none;
+
+    background: #29292d;
+
+    color: white;
+
+    padding: 7px 10px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+}
