@@ -27,7 +27,10 @@ const playButton =
     document.querySelector(".play-btn");
 const previousButton =
     document.getElementById("previousBtn");
+const sleepTimer =
+    document.getElementById("sleepTimer");
 
+let sleepTimerID = null;
 const nextButton =
     document.getElementById("nextBtn");
 const repeatButton =
@@ -1889,3 +1892,78 @@ function updatePlayingSong() {
     }
 
 }
+
+/* ===============================
+   Sleep Timer
+=============================== */
+
+sleepTimer.addEventListener(
+    "change",
+    function () {
+
+        const minutes =
+            Number(this.value);
+
+
+        /* Clear previous timer */
+
+        if (sleepTimerID) {
+
+            clearTimeout(
+                sleepTimerID
+            );
+
+            sleepTimerID = null;
+
+        }
+
+
+        /* Timer Off */
+
+        if (minutes === 0) {
+
+            return;
+
+        }
+
+
+        /* Convert minutes to milliseconds */
+
+        const milliseconds =
+            minutes *
+            60 *
+            1000;
+
+
+        sleepTimerID =
+            setTimeout(
+                function () {
+
+                    audioPlayer.pause();
+
+
+                    playButton.textContent =
+                        "▶";
+
+
+                    updatePlayingSong();
+
+
+                    sleepTimer.value =
+                        "0";
+
+
+                    sleepTimerID =
+                        null;
+
+
+                    alert(
+                        "Sleep timer finished."
+                    );
+
+                },
+                milliseconds
+            );
+
+    }
+);
