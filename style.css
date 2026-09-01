@@ -601,3 +601,106 @@ body {
 .edit-btn {
     color: white !important;
 }
+
+/* ===============================
+   Currently Playing
+=============================== */
+
+.song-item.playing {
+    border: 1px solid #555;
+
+    background: #222226;
+
+    transform: scale(1.01);
+}
+
+
+.song-item.playing .song-name {
+    font-weight: bold;
+}
+
+
+.song-item.playing .song-artist {
+    color: #aaa;
+}
+
+
+/* ===============================
+   Cover Animation
+=============================== */
+
+.cover.playing {
+    animation:
+        coverPulse 2s ease-in-out infinite;
+}
+
+
+.cover.playing img {
+    animation:
+        coverRotate 12s linear infinite;
+}
+
+
+@keyframes coverPulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.025);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+@keyframes coverRotate {
+
+    from {
+        transform: scale(1.03) rotate(0deg);
+    }
+
+    to {
+        transform: scale(1.03) rotate(360deg);
+    }
+
+}
+
+
+/* ===============================
+   Playing Indicator
+=============================== */
+
+.song-item.playing::after {
+
+    content: "♫";
+
+    margin-left: 5px;
+
+    font-size: 14px;
+
+    animation:
+        musicPulse 1s ease-in-out infinite;
+
+}
+
+
+@keyframes musicPulse {
+
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+
+}
