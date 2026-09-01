@@ -71,7 +71,9 @@ let currentAudioURL = null;
 
 let currentCoverURL = null;
 
+let currentSongIndex = -1;
 
+let playbackQueue = [];
 /* ===============================
    Supported Audio Formats
 =============================== */
@@ -295,7 +297,9 @@ saveMusic.addEventListener(
                     savedSong
                 );
 
-
+playbackQueue.push(
+    savedSong
+);
                 renderSongList();
 
                 loadSong(
@@ -366,7 +370,7 @@ function loadSavedSongs() {
             savedSongs =
                 getAllRequest.result;
 
-
+playbackQueue = [...savedSongs];
             /* Old songs compatibility */
 
             savedSongs.forEach(
@@ -482,7 +486,14 @@ function loadSong(song) {
     currentSongId =
         song.id;
 
+currentSongIndex =
+    playbackQueue.findIndex(
+        function (item) {
 
+            return item.id === song.id;
+
+        }
+    );
     /* Song Information */
 
     songTitle.textContent =
@@ -1201,7 +1212,14 @@ function deleteSong(songId) {
                     }
                 );
 
+playbackQueue =
+    playbackQueue.filter(
+        function (item) {
 
+            return item.id !== songId;
+
+        }
+    );
             renderSongList();
 
 
@@ -1309,11 +1327,48 @@ function formatTime(seconds) {
    Next / Previous
 =============================== */
 
+
 function playNextSong() {
 
-    if (savedSongs.length === 0) {
+    if (
+        playbackQueue.length === 0
+    ) {
 
         return;
+
+    }
+
+
+    /* Repeat One */
+
+    if (
+        repeatMode === "one" &&
+        currentSongId !== null
+    ) {
+
+        const currentSong =
+            playbackQueue.find(
+                function (song) {
+
+                    return song.id ===
+                        currentSongId;
+
+                }
+            );
+
+
+        if (currentSong) {
+
+            loadSong(currentSong);
+
+            audioPlayer.play();
+
+            playButton.textContent =
+                "❚❚";
+
+            return;
+
+        }
 
     }
 
@@ -1322,13 +1377,18 @@ function playNextSong() {
 
     if (shuffleMode) {
 
-        if (savedSongs.length === 1) {
+        if (
+            playbackQueue.length === 1
+        ) {
 
-            loadSong(savedSongs[0]);
+            loadSong(
+                playbackQueue[0]
+            );
 
             audioPlayer.play();
 
-            playButton.textContent = "❚❚";
+            playButton.textContent =
+                "❚❚";
 
             return;
 
@@ -1337,74 +1397,74 @@ function playNextSong() {
 
         let randomIndex;
 
+
         do {
 
             randomIndex =
                 Math.floor(
                     Math.random() *
-                    savedSongs.length
+                    playbackQueue.length
                 );
 
-        } while (
-            savedSongs[randomIndex].id ===
+        }
+
+        while (
+            playbackQueue[randomIndex].id ===
             currentSongId
         );
 
 
         const randomSong =
-            savedSongs[randomIndex];
+            playbackQueue[randomIndex];
 
 
         loadSong(randomSong);
 
         audioPlayer.play();
 
-        playButton.textContent = "❚❚";
+        playButton.textContent =
+            "❚❚";
 
         return;
 
     }
 
 
-    /* Normal Next */
+    /* Normal Queue */
 
-    let currentIndex =
-        savedSongs.findIndex(
-            function (song) {
-
-                return song.id === currentSongId;
-
-            }
-        );
+    let nextIndex =
+        currentSongIndex + 1;
 
 
-    if (currentIndex === -1) {
-
-        currentIndex = 0;
-
-    }
-
-    else {
-
-        currentIndex++;
-
-    }
-
-
-    /* Repeat All / Playlist Loop */
+    /* End of Queue */
 
     if (
-        currentIndex >=
-        savedSongs.length
+        nextIndex >=
+        playbackQueue.length
     ) {
 
-        currentIndex = 0;
+        if (
+            repeatMode === "all"
+        ) {
+
+            nextIndex = 0;
+
+        }
+
+        else {
+
+            playButton.textContent =
+                "▶";
+
+            return;
+
+        }
 
     }
 
 
     const nextSong =
-        savedSongs[currentIndex];
+        playbackQueue[nextIndex];
 
 
     loadSong(nextSong);
@@ -1423,55 +1483,36 @@ function playNextSong() {
 
 function playPreviousSong() {
 
-    if (savedSongs.length === 0) {
+    if (
+        playbackQueue.length === 0
+    ) {
 
         return;
 
     }
 
 
-    let currentIndex =
-        savedSongs.findIndex(
-            function (song) {
-
-                return song.id === currentSongId;
-
-            }
-        );
+    let previousIndex =
+        currentSongIndex - 1;
 
 
-    if (currentIndex === -1) {
+    if (
+        previousIndex < 0
+    ) {
 
-        currentIndex = 0;
-
-    }
-
-    else {
-
-        currentIndex--;
-
-    }
-
-
-    /* If first song, go to last song */
-
-    if (currentIndex < 0) {
-
-        currentIndex =
-            savedSongs.length - 1;
+        previousIndex =
+            playbackQueue.length - 1;
 
     }
 
 
     const previousSong =
-        savedSongs[currentIndex];
+        playbackQueue[previousIndex];
 
 
     loadSong(previousSong);
 
-
     audioPlayer.play();
-
 
     playButton.textContent =
         "❚❚";
