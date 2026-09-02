@@ -653,42 +653,62 @@ audioPlayer.addEventListener(
 );
 
 
-/* ===============================
-   Seek
-=============================== */
+// ===============================
+// Seek - Touch + Mouse + Drag
+// ===============================
 
+function seekAudio(event) {
+
+    if (!audioPlayer.duration) {
+        return;
+    }
+
+    const rect =
+        progressBar.getBoundingClientRect();
+
+    let clientX;
+
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+    } else {
+        clientX = event.clientX;
+    }
+
+    let position =
+        (clientX - rect.left) / rect.width;
+
+    // Keep between 0 and 1
+    position = Math.max(0, Math.min(1, position));
+
+    audioPlayer.currentTime =
+        position * audioPlayer.duration;
+}
+
+
+// Click / tap
 progressBar.addEventListener(
     "click",
+    seekAudio
+);
+
+
+// Touch start
+progressBar.addEventListener(
+    "touchstart",
     function (event) {
-
-        if (
-            !audioPlayer.duration
-        ) {
-
-            return;
-
-        }
+        seekAudio(event);
+    },
+    { passive: true }
+);
 
 
-        const rect =
-            progressBar.getBoundingClientRect();
-
-
-        const clickX =
-            event.clientX -
-            rect.left;
-
-
-        const percentage =
-            clickX /
-            rect.width;
-
-
-        audioPlayer.currentTime =
-            percentage *
-            audioPlayer.duration;
-
-    }
+// Touch move - dragging
+progressBar.addEventListener(
+    "touchmove",
+    function (event) {
+        seekAudio(event);
+    },
+    { passive: true }
 );
 
 
