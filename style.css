@@ -1156,3 +1156,93 @@ button {
 #saveMusic:active {
     transform: scale(0.97);
 }
+
+/* =========================================
+   🎵 BEAUTIFUL SEEK BAR
+   ========================================= */
+
+.progress-area {
+    width: 100%;
+    margin: 20px 0 25px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+
+    background: #ffd9e7;
+
+    border-radius: 20px;
+
+    position: relative;
+
+    cursor: pointer;
+
+    overflow: visible;
+
+    touch-action: none;
+
+    box-shadow:
+        inset 0 2px 4px rgba(255, 79, 145, 0.08);
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff8fb6,
+            #ff4f91
+        );
+
+    border-radius: 20px;
+
+    position: relative;
+
+    transition: width 0.08s linear;
+}
+
+
+/* Pink draggable-looking dot */
+
+.progress::after {
+    content: "";
+
+    position: absolute;
+
+    right: -7px;
+    top: 50%;
+
+    width: 18px;
+    height: 18px;
+
+    transform: translateY(-50%);
+
+    border-radius: 50%;
+
+    background: #ff4f91;
+
+    border: 4px solid white;
+
+    box-shadow:
+        0 3px 12px rgba(255, 79, 145, 0.35);
+
+    cursor: pointer;
+}
+
+
+/* Time */
+
+.time {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 9px;
+
+    color: #9b7d89;
+
+    font-size: 12px;
+}
