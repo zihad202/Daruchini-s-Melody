@@ -2,229 +2,882 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     >
 
-    <title>My Music Player</title>
+    <title>My Music Player 🌸</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 
 <body>
 
+<div class="app-page">
 
-    <div class="player">
-
-        <audio id="audioPlayer"></audio>
+    <div class="app-shell">
 
 
-        <!-- Upload Section -->
+        <!-- =====================================
+             🌸 LEFT SIDEBAR
+        ====================================== -->
 
-        <div class="upload-section">
+        <aside class="sidebar">
 
-            <label for="audioUpload">
-                🎵 Choose Audio
+            <div class="brand">
+
+                <div class="brand-script">
+                    My Music
+                </div>
+
+                <div class="brand-subtitle">
+                    PLAYER
+                </div>
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+                <button class="nav-item active">
+                    <span class="nav-icon">🎵</span>
+                    <span>Library</span>
+                </button>
+
+                <button class="nav-item" id="sidebarFavorites">
+                    <span class="nav-icon">♡</span>
+                    <span>Favorites</span>
+                </button>
+
+                <button class="nav-item">
+                    <span class="nav-icon">◷</span>
+                    <span>Recent</span>
+                </button>
+
+                <button class="nav-item">
+                    <span class="nav-icon">☷</span>
+                    <span>Playlists</span>
+                </button>
+
+                <button class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Radio</span>
+                </button>
+
+                <button class="nav-item">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </button>
+
+            </nav>
+
+
+            <!-- Quick Actions -->
+
+            <div class="quick-title">
+                QUICK ACTIONS
+            </div>
+
+            <label
+                for="audioUpload"
+                class="add-music-button"
+            >
+                <span>＋</span>
+                <span>Add Music</span>
             </label>
 
-            <input
-                type="file"
-                id="audioUpload"
-                accept=".mp3,.m4a,.wav,.ogg,.aac,.webm,audio/mpeg,audio/mp4,audio/wav,audio/ogg,audio/aac,audio/webm"
+
+            <!-- =====================================
+                 🎵 PLAYING NOW SIDEBAR
+            ====================================== -->
+
+            <div class="sidebar-playing">
+
+                <div class="quick-title">
+                    PLAYING NOW
+                </div>
+
+                <div class="side-now-card">
+
+                    <div class="side-cover">
+
+                        <img
+                            id="sideCoverImage"
+                            src=""
+                            alt=""
+                        >
+
+                        <div class="side-cover-placeholder">
+                            🌸
+                        </div>
+
+                    </div>
+
+                    <div class="side-song-title">
+                        No Song Selected
+                    </div>
+
+                    <div class="side-song-artist">
+                        My Library
+                    </div>
+
+                    <div class="mini-wave">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <div class="side-time">
+                        <span>0:00</span>
+                        <span>0:00</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 🌸 Decorative Flower -->
+
+            <div class="sidebar-flower">
+                🌸
+            </div>
+
+        </aside>
+
+
+
+        <!-- =====================================
+             🎵 MAIN CONTENT
+        ====================================== -->
+
+        <main class="main-content">
+
+
+            <!-- =====================================
+                 TOP HEADER
+            ====================================== -->
+
+            <header class="top-header">
+
+                <div class="search-box">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search songs, artist..."
+                    >
+
+                </div>
+
+
+                <button
+                    class="header-round-button"
+                    id="themeButton"
+                    type="button"
+                >
+                    ☼
+                </button>
+
+
+                <button
+                    class="header-heart"
+                    type="button"
+                >
+                    ♥
+                </button>
+
+            </header>
+
+
+
+            <!-- =====================================
+                 🌸 MAIN PLAYER
+            ====================================== -->
+
+            <section class="main-player">
+
+
+                <!-- Cover -->
+
+                <div class="main-cover-area">
+
+                    <div class="cover" id="mainCover">
+
+                        <img
+                            id="coverImage"
+                            src=""
+                            alt="Album Cover"
+                        >
+
+                        <div
+                            class="cover-placeholder"
+                            id="coverPlaceholder"
+                        >
+                            🌸
+                        </div>
+
+
+                        <!-- Favorite on Cover -->
+
+                        <button
+                            class="cover-favorite"
+                            type="button"
+                            id="mainFavorite"
+                        >
+                            ♥
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Song Details -->
+
+                <div class="player-details">
+
+                    <h1 id="songTitle">
+                        No Song Selected
+                    </h1>
+
+                    <p id="artistName">
+                        My Library
+                    </p>
+
+
+                    <div class="library-badge">
+                        <span>♥</span>
+                        <span>My Library</span>
+                    </div>
+
+
+                    <!-- Fake Waveform -->
+
+                    <div
+                        class="waveform"
+                        aria-hidden="true"
+                    >
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                    </div>
+
+
+                    <!-- =================================
+                         🎵 REAL SEEK BAR
+                    ================================== -->
+
+                    <div class="progress-area">
+
+                        <div
+                            class="progress-bar"
+                            id="progressBar"
+                        >
+
+                            <div
+                                class="progress"
+                                id="progress"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="time">
+
+                            <span id="currentTime">
+                                0:00
+                            </span>
+
+                            <span id="duration">
+                                0:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     🎛️ CONTROLS
+                ================================== -->
+
+                <div class="player-controls">
+
+
+                    <button
+                        id="shuffleBtn"
+                        class="control-button"
+                        type="button"
+                        title="Shuffle"
+                    >
+                        🔀
+                    </button>
+
+
+                    <button
+                        id="previousBtn"
+                        class="control-button"
+                        type="button"
+                        title="Previous"
+                    >
+                        ⏮
+                    </button>
+
+
+                    <button
+                        class="play-btn"
+                        type="button"
+                        title="Play / Pause"
+                    >
+                        ▶
+                    </button>
+
+
+                    <button
+                        id="nextBtn"
+                        class="control-button"
+                        type="button"
+                        title="Next"
+                    >
+                        ⏭
+                    </button>
+
+
+                    <button
+                        id="repeatBtn"
+                        class="control-button"
+                        type="button"
+                        title="Repeat"
+                    >
+                        ↶
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================
+                     🔊 VOLUME
+                ================================== -->
+
+                <div class="volume-row">
+
+                    <span class="volume-icon">
+                        🔊
+                    </span>
+
+                    <input
+                        type="range"
+                        id="volumeBar"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="1"
+                    >
+
+                    <span class="volume-icon">
+                        🔊
+                    </span>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =====================================
+                 🎛️ EXTRA TOOLS
+            ====================================== -->
+
+            <section class="extra-tools">
+
+                <button
+                    type="button"
+                    id="toolShuffle"
+                >
+                    <span>🔀</span>
+                    <span>Shuffle</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    id="toolRepeat"
+                >
+                    <span>🔁</span>
+                    <span>Repeat All</span>
+                </button>
+
+
+                <div class="sleep-tool">
+
+                    <span>◷</span>
+                    <span>Sleep Timer</span>
+
+                    <select id="sleepTimer">
+
+                        <option value="0">
+                            Off
+                        </option>
+
+                        <option value="15">
+                            15 Minutes
+                        </option>
+
+                        <option value="30">
+                            30 Minutes
+                        </option>
+
+                        <option value="45">
+                            45 Minutes
+                        </option>
+
+                        <option value="60">
+                            60 Minutes
+                        </option>
+
+                        <option value="90">
+                            90 Minutes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="equalizerButton"
+                >
+                    <span>🎚</span>
+                    <span>Equalizer</span>
+                </button>
+
+            </section>
+
+
+
+            <!-- =====================================
+                 📚 LIBRARY HEADER
+            ====================================== -->
+
+            <section class="library-section">
+
+
+                <div class="library-header">
+
+                    <div>
+
+                        <h2>
+                            All Songs
+                            <span id="songCount">
+                                0 Songs
+                            </span>
+                        </h2>
+
+                    </div>
+
+
+                    <div class="library-actions">
+
+                        <button
+                            type="button"
+                            class="library-round"
+                        >
+                            ⌕
+                        </button>
+
+                        <button
+                            id="favoriteFilter"
+                            type="button"
+                            class="filter-button"
+                        >
+                            ♡ Filter
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================
+                     📤 UPLOAD AREA
+                ================================== -->
+
+                <div class="upload-section">
+
+                    <label
+                        for="audioUpload"
+                        class="upload-card"
+                    >
+
+                        <span class="upload-card-icon">
+                            🎵
+                        </span>
+
+                        <span>
+                            <strong>Choose Audio</strong>
+                            <small id="audioFileName">
+                                MP3, M4A, WAV...
+                            </small>
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="audioUpload"
+                        accept="audio/*,.m4a,.mp3,.wav,.ogg,.aac"
+                        hidden
+                    >
+
+
+
+                    <label
+                        for="coverUpload"
+                        class="upload-card"
+                    >
+
+                        <span class="upload-card-icon">
+                            🌸
+                        </span>
+
+                        <span>
+                            <strong>Choose Cover</strong>
+                            <small id="coverFileName">
+                                Album artwork
+                            </small>
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="coverUpload"
+                        accept="image/*"
+                        hidden
+                    >
+
+
+                    <button
+                        id="saveMusic"
+                        type="button"
+                    >
+                        ＋ Save Music
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================
+                     🎵 SONG LIST
+                ================================== -->
+
+                <div id="songList">
+
+                    <!-- Songs are inserted by app.js -->
+
+                </div>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =========================================
+         🎵 FIXED BOTTOM NOW PLAYING BAR
+    ========================================== -->
+
+    <div class="bottom-player">
+
+
+        <div class="bottom-song">
+
+            <div class="bottom-cover">
+
+                <img
+                    id="bottomCoverImage"
+                    src=""
+                    alt=""
+                >
+
+                <span>
+                    🌸
+                </span>
+
+            </div>
+
+
+            <div class="bottom-info">
+
+                <strong id="bottomSongTitle">
+                    No Song Selected
+                </strong>
+
+                <small id="bottomArtistName">
+                    My Library
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="bottom-controls">
+
+
+            <button
+                id="bottomFavorite"
+                type="button"
             >
-
-
-            <label for="coverUpload">
-                🖼️ Choose Cover
-            </label>
-
-            <input
-                type="file"
-                id="coverUpload"
-                accept="image/*"
-            >
-
-
-            <button id="saveMusic">
-                ＋ Save Music
+                ♥
             </button>
 
-        </div>
 
-
-        <!-- Cover -->
-
-        <div class="cover">
-
-            <img
-                id="coverImage"
-                src=""
-                alt="Cover"
+            <button
+                id="bottomShuffle"
+                type="button"
             >
+                🔀
+            </button>
 
-            <div class="music-icon">
-                ♫
-            </div>
+
+            <button
+                id="bottomPrevious"
+                type="button"
+            >
+                ⏮
+            </button>
+
+
+            <button
+                id="bottomPlay"
+                type="button"
+                class="bottom-play"
+            >
+                ▶
+            </button>
+
+
+            <button
+                id="bottomNext"
+                type="button"
+            >
+                ⏭
+            </button>
+
+
+            <button
+                id="bottomRepeat"
+                type="button"
+            >
+                🔁
+            </button>
+
 
         </div>
 
 
-        <!-- Song Information -->
 
-        <h1 id="songTitle">
-            No Song Selected
-        </h1>
+        <div class="bottom-volume">
 
-        <p id="artistName">
-            Your Music Library
-        </p>
-
-
-        <!-- Progress -->
-
-        <div class="progress-area">
-
-            <div class="progress-bar">
-
-                <div class="progress"></div>
-
-            </div>
-
-
-            <div class="time">
-
-                <span>0:00</span>
-
-                <span>0:00</span>
-
-            </div>
-
-        </div>
-
-
-        <!-- Controls -->
-
-        <div class="controls">
-
-    <button id="repeatBtn">
-        ↶
-    </button>
-
-    <button id="previousBtn">
-        ⏮
-    </button>
-
-    <button class="play-btn">
-        ▶
-    </button>
-
-    <button id="nextBtn">
-        ⏭
-    </button>
-
-    <button id="shuffleBtn">
-        🔀
-    </button>
-
-        </div>
-
-
-        <!-- Volume -->
-
-        <div class="volume">
-
-            <span>
-                🔊
-            </span>
+            <span>🔊</span>
 
             <input
                 type="range"
                 min="0"
-                max="100"
-                value="80"
+                max="1"
+                step="0.01"
+                value="1"
+                id="bottomVolume"
             >
 
         </div>
 
     </div>
 
-<div class="sleep-timer">
 
-    <span>⏱️ Sleep Timer</span>
 
-    <select id="sleepTimer">
+    <!-- =========================================
+         🎵 REAL AUDIO ELEMENT
+    ========================================== -->
 
-        <option value="0">
-            Off
-        </option>
+    <audio id="audioPlayer"></audio>
 
-        <option value="15">
-            15 Minutes
-        </option>
-
-        <option value="30">
-            30 Minutes
-        </option>
-
-        <option value="45">
-            45 Minutes
-        </option>
-
-        <option value="60">
-            60 Minutes
-        </option>
-
-        <option value="90">
-            90 Minutes
-        </option>
-
-    </select>
-
-    </div>
-    <!-- Music Library -->
-
-    <div class="library">
-<div class="library-tools">
-
-    <input
-        type="search"
-        id="searchInput"
-        placeholder="🔍 Search your music..."
-    >
-
-    <button id="favoriteFilter">
-        ♡ Favorites
-    </button>
 
 </div>
-        <div class="library-header">
-
-            <h2>
-                My Library
-            </h2>
-
-            <span id="songCount">
-                0 Songs
-            </span>
-
-        </div>
 
 
-        <div id="songList"></div>
 
-    </div>
+<!-- =========================================
+     📱 DESKTOP UI SCALING
+     Mobile-এও Desktop layout থাকবে
+========================================== -->
+
+<script>
+
+(function () {
+
+    function scaleDesktopUI() {
+
+        const shell =
+            document.querySelector(".app-shell");
+
+        const bottom =
+            document.querySelector(".bottom-player");
+
+        if (!shell) return;
 
 
-    <script src="app.js"></script>
+        /*
+         * Desktop design width.
+         * Mobile-এ layout পরিবর্তন হবে না।
+         * শুধু পুরো desktop canvas scale হবে।
+         */
+
+        const designWidth = 1200;
+
+        if (window.innerWidth < designWidth) {
+
+            const scale =
+                window.innerWidth / designWidth;
+
+            shell.style.transform =
+                "scale(" + scale + ")";
+
+            shell.style.transformOrigin =
+                "top left";
+
+            shell.style.width =
+                designWidth + "px";
+
+            document.body.style.height =
+                (shell.offsetHeight * scale + 40) + "px";
+
+            if (bottom) {
+
+                bottom.style.transform =
+                    "scale(" + scale + ")";
+
+                bottom.style.transformOrigin =
+                    "bottom left";
+
+                bottom.style.width =
+                    designWidth + "px";
+
+            }
+
+        } else {
+
+            shell.style.transform =
+                "none";
+
+            shell.style.width =
+                designWidth + "px";
+
+            document.body.style.height =
+                "auto";
+
+            if (bottom) {
+
+                bottom.style.transform =
+                    "none";
+
+                bottom.style.width =
+                    designWidth + "px";
+
+            }
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "load",
+        scaleDesktopUI
+    );
+
+    window.addEventListener(
+        "resize",
+        scaleDesktopUI
+    );
+
+})();
+
+</script>
+
+
+
+<!-- =========================================
+     🎵 APP JAVASCRIPT
+========================================== -->
+
+<script src="app.js"></script>
+
 
 </body>
 
