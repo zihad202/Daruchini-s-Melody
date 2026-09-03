@@ -2128,3 +2128,57 @@ body {
 #audioPlayer {
     display: none;
        }
+
+/* ================================
+   KATH GOLAP / PLUMERIA DECORATION
+================================ */
+
+.app-page {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Main flower decoration */
+.app-page::before {
+    content: "";
+    position: fixed;
+    top: -35px;
+    right: -35px;
+    width: 230px;
+    height: 230px;
+    background-image: url("images/kath-golap.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0.95;
+    transform: rotate(12deg);
+}
+
+/* Bottom-left flower */
+.app-page::after {
+    content: "";
+    position: fixed;
+    bottom: 55px;
+    left: -45px;
+    width: 220px;
+    height: 220px;
+    background-image: url("images/kath-golap.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0.75;
+    transform: rotate(-18deg);
+}
+
+/* Keep important controls above decoration */
+.top-header,
+.main-content,
+.sidebar,
+.bottom-player {
+    position: relative;
+    z-index: 5;
+}
