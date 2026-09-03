@@ -1989,283 +1989,220 @@ sleepTimer.addEventListener(
 );
 
 /* =========================================================
-   🌸 NEW ROMANTIC UI CONTROLS
-   ========================================================= */
-
+ /* =========================================
+   STEP 9 — PLAYER FUNCTIONALITY POLISH
+========================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* -----------------------------------------
-       Bottom Player Elements
-    ----------------------------------------- */
+    /* ---------- ELEMENTS ---------- */
 
-    const bottomPlay =
-        document.getElementById("bottomPlay");
+    const bottomPlay = document.getElementById("bottomPlay");
+    const bottomPrevious = document.getElementById("bottomPrevious");
+    const bottomNext = document.getElementById("bottomNext");
+    const bottomShuffle = document.getElementById("bottomShuffle");
+    const bottomRepeat = document.getElementById("bottomRepeat");
+    const bottomFavorite = document.getElementById("bottomFavorite");
+    const bottomVolume = document.getElementById("bottomVolume");
 
-    const bottomPrevious =
-        document.getElementById("bottomPrevious");
+    const coverFavorite = document.getElementById("coverFavorite");
 
-    const bottomNext =
-        document.getElementById("bottomNext");
+    const sideCoverImage = document.getElementById("sideCoverImage");
+    const sideSongTitle = document.getElementById("sideSongTitle");
+    const sideArtistName = document.getElementById("sideArtistName");
 
-    const bottomShuffle =
-        document.getElementById("bottomShuffle");
+    const bottomCoverImage = document.getElementById("bottomCoverImage");
+    const bottomSongTitle = document.getElementById("bottomSongTitle");
+    const bottomArtistName = document.getElementById("bottomArtistName");
 
-    const bottomRepeat =
-        document.getElementById("bottomRepeat");
+    const extraShuffle = document.getElementById("extraShuffle");
+    const extraRepeat = document.getElementById("extraRepeat");
 
-    const bottomFavorite =
-        document.getElementById("bottomFavorite");
+    const libraryNav = document.getElementById("libraryNav");
+    const favoritesNav = document.getElementById("favoritesNav");
 
-    const bottomVolume =
-        document.getElementById("bottomVolume");
+    const libraryFilterButton =
+        document.getElementById("libraryFilterButton");
+
+    const themeButton =
+        document.getElementById("themeButton");
 
 
-    /* -----------------------------------------
-       Bottom Play
-    ----------------------------------------- */
+    /* ---------- SYNC NOW PLAYING ---------- */
+
+    function syncNowPlayingUI() {
+
+        if (!currentSongId || !savedSongs.length) {
+            return;
+        }
+
+        const song = savedSongs.find(
+            s => s.id === currentSongId
+        );
+
+        if (!song) return;
+
+
+        /* Title */
+
+        if (sideSongTitle) {
+            sideSongTitle.textContent = song.name;
+        }
+
+        if (bottomSongTitle) {
+            bottomSongTitle.textContent = song.name;
+        }
+
+
+        /* Artist */
+
+        if (sideArtistName) {
+            sideArtistName.textContent =
+                song.artist || "My Library";
+        }
+
+        if (bottomArtistName) {
+            bottomArtistName.textContent =
+                song.artist || "My Library";
+        }
+
+
+        /* Cover */
+
+        if (song.cover) {
+
+            const url = URL.createObjectURL(song.cover);
+
+            if (sideCoverImage) {
+                sideCoverImage.src = url;
+                sideCoverImage.style.display = "block";
+            }
+
+            if (bottomCoverImage) {
+                bottomCoverImage.src = url;
+                bottomCoverImage.style.display = "block";
+            }
+        }
+
+
+        /* Favorite */
+
+        const favorite =
+            song.favorite === true;
+
+        if (coverFavorite) {
+            coverFavorite.textContent =
+                favorite ? "♥" : "♡";
+
+            coverFavorite.classList.toggle(
+                "active",
+                favorite
+            );
+        }
+
+        if (bottomFavorite) {
+            bottomFavorite.textContent =
+                favorite ? "♥" : "♡";
+
+            bottomFavorite.classList.toggle(
+                "active",
+                favorite
+            );
+        }
+    }
+
+
+    /* ---------- BOTTOM PLAYER ---------- */
 
     if (bottomPlay) {
 
         bottomPlay.addEventListener(
             "click",
-            function (event) {
+            function () {
 
-                event.stopPropagation();
+                if (!currentSongId) return;
 
-                playButton.click();
-
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                } else {
+                    audioPlayer.pause();
+                }
             }
         );
-
     }
 
-
-    /* -----------------------------------------
-       Bottom Previous
-    ----------------------------------------- */
 
     if (bottomPrevious) {
 
         bottomPrevious.addEventListener(
             "click",
-            function (event) {
+            function () {
 
-                event.stopPropagation();
-
-                previousButton.click();
-
+                if (typeof playPreviousSong === "function") {
+                    playPreviousSong();
+                } else if (
+                    typeof previousSong === "function"
+                ) {
+                    previousSong();
+                }
             }
         );
-
     }
 
-
-    /* -----------------------------------------
-       Bottom Next
-    ----------------------------------------- */
 
     if (bottomNext) {
 
         bottomNext.addEventListener(
             "click",
-            function (event) {
+            function () {
 
-                event.stopPropagation();
-
-                nextButton.click();
-
+                if (typeof playNextSong === "function") {
+                    playNextSong();
+                }
             }
         );
-
     }
 
 
-    /* -----------------------------------------
-       Bottom Shuffle
-    ----------------------------------------- */
+    /* ---------- SHUFFLE ---------- */
+
+    function syncShuffleUI() {
+
+        if (bottomShuffle) {
+            bottomShuffle.classList.toggle(
+                "active",
+                shuffleMode
+            );
+        }
+
+        if (extraShuffle) {
+            extraShuffle.classList.toggle(
+                "active",
+                shuffleMode
+            );
+        }
+
+        if (shuffleButton) {
+            shuffleButton.classList.toggle(
+                "active",
+                shuffleMode
+            );
+        }
+    }
+
 
     if (bottomShuffle) {
 
         bottomShuffle.addEventListener(
             "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                shuffleButton.click();
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Bottom Repeat
-    ----------------------------------------- */
-
-    if (bottomRepeat) {
-
-        bottomRepeat.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                repeatButton.click();
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Bottom Volume
-    ----------------------------------------- */
-
-    if (bottomVolume) {
-
-        bottomVolume.addEventListener(
-            "input",
             function () {
 
-                const value =
-                    Number(this.value) / 100;
+                shuffleMode = !shuffleMode;
 
-                audioPlayer.volume =
-                    value;
-
-                volumeBar.value =
-                    this.value;
-
+                syncShuffleUI();
             }
         );
-
     }
-
-
-    /* -----------------------------------------
-       Cover Favorite
-    ----------------------------------------- */
-
-    const coverFavorite =
-        document.getElementById(
-            "coverFavorite"
-        );
-
-
-    if (coverFavorite) {
-
-        coverFavorite.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                if (!currentSongId) {
-                    return;
-                }
-
-                toggleFavorite(
-                    currentSongId
-                );
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Bottom Favorite
-    ----------------------------------------- */
-
-    if (bottomFavorite) {
-
-        bottomFavorite.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                if (!currentSongId) {
-                    return;
-                }
-
-                toggleFavorite(
-                    currentSongId
-                );
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Sidebar Favorites
-    ----------------------------------------- */
-
-    const favoritesNav =
-        document.getElementById(
-            "favoritesNav"
-        );
-
-
-    if (favoritesNav) {
-
-        favoritesNav.addEventListener(
-            "click",
-            function () {
-
-                showFavoritesOnly =
-                    true;
-
-                renderSongList();
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Library Navigation
-    ----------------------------------------- */
-
-    const libraryNav =
-        document.getElementById(
-            "libraryNav"
-        );
-
-
-    if (libraryNav) {
-
-        libraryNav.addEventListener(
-            "click",
-            function () {
-
-                showFavoritesOnly =
-                    false;
-
-                renderSongList();
-
-            }
-        );
-
-    }
-
-
-    /* -----------------------------------------
-       Extra Shuffle Button
-    ----------------------------------------- */
-
-    const extraShuffle =
-        document.getElementById(
-            "extraShuffle"
-        );
 
 
     if (extraShuffle) {
@@ -2274,201 +2211,254 @@ document.addEventListener("DOMContentLoaded", function () {
             "click",
             function () {
 
-                shuffleButton.click();
+                shuffleMode = !shuffleMode;
 
+                syncShuffleUI();
             }
         );
-
     }
 
 
-    /* -----------------------------------------
-       Extra Repeat Button
-    ----------------------------------------- */
+    /* ---------- REPEAT ---------- */
 
-    const extraRepeat =
-        document.getElementById(
-            "extraRepeat"
+    function syncRepeatUI() {
+
+        if (bottomRepeat) {
+            bottomRepeat.classList.toggle(
+                "active",
+                repeatMode !== "off"
+            );
+        }
+
+        if (extraRepeat) {
+            extraRepeat.classList.toggle(
+                "active",
+                repeatMode !== "off"
+            );
+        }
+
+        if (repeatButton) {
+            repeatButton.classList.toggle(
+                "active",
+                repeatMode !== "off"
+            );
+        }
+    }
+
+
+    /* ---------- VOLUME ---------- */
+
+    function syncVolume(value) {
+
+        let volume = Number(value);
+
+        /*
+         * Support both:
+         * 0-1
+         * and
+         * 0-100
+         */
+
+        if (volume > 1) {
+            volume = volume / 100;
+        }
+
+        volume = Math.max(
+            0,
+            Math.min(1, volume)
         );
 
+        audioPlayer.volume = volume;
 
-    if (extraRepeat) {
 
-        extraRepeat.addEventListener(
+        if (volumeBar) {
+
+            if (Number(volumeBar.max) > 1) {
+                volumeBar.value =
+                    Math.round(volume * 100);
+            } else {
+                volumeBar.value = volume;
+            }
+        }
+
+        if (bottomVolume) {
+
+            if (Number(bottomVolume.max) > 1) {
+                bottomVolume.value =
+                    Math.round(volume * 100);
+            } else {
+                bottomVolume.value = volume;
+            }
+        }
+    }
+
+
+    if (bottomVolume) {
+
+        bottomVolume.addEventListener(
+            "input",
+            function () {
+                syncVolume(this.value);
+            }
+        );
+    }
+
+
+    /* ---------- FAVORITE ---------- */
+
+    function updateFavoriteUI() {
+
+        if (!currentSongId) return;
+
+        const song = savedSongs.find(
+            s => s.id === currentSongId
+        );
+
+        if (!song) return;
+
+        const isFavorite =
+            song.favorite === true;
+
+        if (coverFavorite) {
+            coverFavorite.textContent =
+                isFavorite ? "♥" : "♡";
+
+            coverFavorite.classList.toggle(
+                "active",
+                isFavorite
+            );
+        }
+
+        if (bottomFavorite) {
+            bottomFavorite.textContent =
+                isFavorite ? "♥" : "♡";
+
+            bottomFavorite.classList.toggle(
+                "active",
+                isFavorite
+            );
+        }
+    }
+
+
+    function favoriteCurrentSong() {
+
+        if (!currentSongId) return;
+
+        if (typeof toggleFavorite === "function") {
+            toggleFavorite(currentSongId);
+        }
+
+        setTimeout(
+            updateFavoriteUI,
+            100
+        );
+    }
+
+
+    if (coverFavorite) {
+
+        coverFavorite.addEventListener(
+            "click",
+            favoriteCurrentSong
+        );
+    }
+
+
+    if (bottomFavorite) {
+
+        bottomFavorite.addEventListener(
+            "click",
+            favoriteCurrentSong
+        );
+    }
+
+
+    /* ---------- LIBRARY / FAVORITES ---------- */
+
+    function showLibrary() {
+
+        if (typeof showFavoritesOnly !== "undefined") {
+            showFavoritesOnly = false;
+        }
+
+        if (typeof renderSongList === "function") {
+            renderSongList();
+        }
+
+        if (libraryNav) {
+            libraryNav.classList.add("active");
+        }
+
+        if (favoritesNav) {
+            favoritesNav.classList.remove("active");
+        }
+    }
+
+
+    function showFavorites() {
+
+        if (typeof showFavoritesOnly !== "undefined") {
+            showFavoritesOnly = true;
+        }
+
+        if (typeof renderSongList === "function") {
+            renderSongList();
+        }
+
+        if (favoritesNav) {
+            favoritesNav.classList.add("active");
+        }
+
+        if (libraryNav) {
+            libraryNav.classList.remove("active");
+        }
+    }
+
+
+    if (libraryNav) {
+        libraryNav.addEventListener(
+            "click",
+            showLibrary
+        );
+    }
+
+
+    if (favoritesNav) {
+        favoritesNav.addEventListener(
+            "click",
+            showFavorites
+        );
+    }
+
+
+    if (libraryFilterButton) {
+
+        libraryFilterButton.addEventListener(
             "click",
             function () {
 
-                repeatButton.click();
+                if (
+                    typeof showFavoritesOnly !==
+                    "undefined"
+                ) {
 
-            }
-        );
+                    showFavoritesOnly =
+                        !showFavoritesOnly;
 
-    }
+                    renderSongList();
 
-
-    /* -----------------------------------------
-       Update Bottom Player
-    ----------------------------------------- */
-
-    function updateBottomPlayer() {
-
-        const bottomTitle =
-            document.getElementById(
-                "bottomSongTitle"
-            );
-
-        const bottomArtist =
-            document.getElementById(
-                "bottomArtistName"
-            );
-
-        if (!bottomTitle || !bottomArtist) {
-            return;
-        }
-
-
-        bottomTitle.textContent =
-            songTitle.textContent;
-
-
-        bottomArtist.textContent =
-            artistName.textContent;
-
-
-        const song =
-            savedSongs.find(
-                function (item) {
-
-                    return item.id ===
-                        currentSongId;
-
+                    this.classList.toggle(
+                        "active",
+                        showFavoritesOnly
+                    );
                 }
-            );
-
-
-        if (
-            song &&
-            song.cover
-        ) {
-
-            const url =
-                URL.createObjectURL(
-                    song.cover
-                );
-
-
-            const bottomImage =
-                document.getElementById(
-                    "bottomCoverImage"
-                );
-
-
-            if (bottomImage) {
-
-                bottomImage.src =
-                    url;
-
-                bottomImage.style.display =
-                    "block";
-
             }
-
-        }
-
+        );
     }
 
 
-    /* -----------------------------------------
-       Watch Player Changes
-    ----------------------------------------- */
-
-    audioPlayer.addEventListener(
-        "loadedmetadata",
-        function () {
-
-            updateBottomPlayer();
-
-        }
-    );
-
-
-    audioPlayer.addEventListener(
-        "play",
-        function () {
-
-            updateBottomPlayer();
-
-            if (bottomPlay) {
-
-                bottomPlay.textContent =
-                    "⏸";
-
-            }
-
-        }
-    );
-
-
-    audioPlayer.addEventListener(
-        "pause",
-        function () {
-
-            if (bottomPlay) {
-
-                bottomPlay.textContent =
-                    "▶";
-
-            }
-
-        }
-    );
-
-
-    /* -----------------------------------------
-       Update Sidebar Player
-    ----------------------------------------- */
-
-    audioPlayer.addEventListener(
-        "loadedmetadata",
-        function () {
-
-            const sideTitle =
-                document.getElementById(
-                    "sideSongTitle"
-                );
-
-            const sideArtist =
-                document.getElementById(
-                    "sideArtistName"
-                );
-
-            if (sideTitle) {
-
-                sideTitle.textContent =
-                    songTitle.textContent;
-
-            }
-
-            if (sideArtist) {
-
-                sideArtist.textContent =
-                    artistName.textContent;
-
-            }
-
-        }
-    );
-
-
-    /* -----------------------------------------
-       Theme Button
-    ----------------------------------------- */
-
-    const themeButton =
-        document.getElementById(
-            "themeButton"
-        );
-
+    /* ---------- THEME ---------- */
 
     if (themeButton) {
 
@@ -2480,10 +2470,85 @@ document.addEventListener("DOMContentLoaded", function () {
                     "soft-dark"
                 );
 
+                this.classList.toggle(
+                    "active"
+                );
             }
         );
-
     }
 
 
-});
+    /* ---------- AUDIO EVENTS ---------- */
+
+    audioPlayer.addEventListener(
+        "play",
+        function () {
+
+            if (playButton) {
+                playButton.textContent = "❚❚";
+            }
+
+            if (bottomPlay) {
+                bottomPlay.textContent = "❚❚";
+            }
+
+            if (cover) {
+                cover.classList.add("playing");
+            }
+
+            updateFavoriteUI();
+        }
+    );
+
+
+    audioPlayer.addEventListener(
+        "pause",
+        function () {
+
+            if (playButton) {
+                playButton.textContent = "▶";
+            }
+
+            if (bottomPlay) {
+                bottomPlay.textContent = "▶";
+            }
+
+            if (cover) {
+                cover.classList.remove("playing");
+            }
+        }
+    );
+
+
+    audioPlayer.addEventListener(
+        "loadedmetadata",
+        function () {
+
+            syncNowPlaying();
+        }
+    );
+
+
+    audioPlayer.addEventListener(
+        "timeupdate",
+        function () {
+
+            syncNowPlayingUI();
+        }
+    );
+
+
+    /* ---------- INITIAL STATE ---------- */
+
+    setTimeout(
+        function () {
+
+            syncShuffleUI();
+            syncRepeatUI();
+            syncNowPlayingUI();
+
+        },
+        300
+    );
+
+});           
