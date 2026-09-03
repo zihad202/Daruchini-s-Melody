@@ -1987,3 +1987,503 @@ sleepTimer.addEventListener(
 
     }
 );
+
+/* =========================================================
+   🌸 NEW ROMANTIC UI CONTROLS
+   ========================================================= */
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* -----------------------------------------
+       Bottom Player Elements
+    ----------------------------------------- */
+
+    const bottomPlay =
+        document.getElementById("bottomPlay");
+
+    const bottomPrevious =
+        document.getElementById("bottomPrevious");
+
+    const bottomNext =
+        document.getElementById("bottomNext");
+
+    const bottomShuffle =
+        document.getElementById("bottomShuffle");
+
+    const bottomRepeat =
+        document.getElementById("bottomRepeat");
+
+    const bottomFavorite =
+        document.getElementById("bottomFavorite");
+
+    const bottomVolume =
+        document.getElementById("bottomVolume");
+
+
+    /* -----------------------------------------
+       Bottom Play
+    ----------------------------------------- */
+
+    if (bottomPlay) {
+
+        bottomPlay.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                playButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Previous
+    ----------------------------------------- */
+
+    if (bottomPrevious) {
+
+        bottomPrevious.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                previousButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Next
+    ----------------------------------------- */
+
+    if (bottomNext) {
+
+        bottomNext.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                nextButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Shuffle
+    ----------------------------------------- */
+
+    if (bottomShuffle) {
+
+        bottomShuffle.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                shuffleButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Repeat
+    ----------------------------------------- */
+
+    if (bottomRepeat) {
+
+        bottomRepeat.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                repeatButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Volume
+    ----------------------------------------- */
+
+    if (bottomVolume) {
+
+        bottomVolume.addEventListener(
+            "input",
+            function () {
+
+                const value =
+                    Number(this.value) / 100;
+
+                audioPlayer.volume =
+                    value;
+
+                volumeBar.value =
+                    this.value;
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Cover Favorite
+    ----------------------------------------- */
+
+    const coverFavorite =
+        document.getElementById(
+            "coverFavorite"
+        );
+
+
+    if (coverFavorite) {
+
+        coverFavorite.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                if (!currentSongId) {
+                    return;
+                }
+
+                toggleFavorite(
+                    currentSongId
+                );
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Bottom Favorite
+    ----------------------------------------- */
+
+    if (bottomFavorite) {
+
+        bottomFavorite.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                if (!currentSongId) {
+                    return;
+                }
+
+                toggleFavorite(
+                    currentSongId
+                );
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Sidebar Favorites
+    ----------------------------------------- */
+
+    const favoritesNav =
+        document.getElementById(
+            "favoritesNav"
+        );
+
+
+    if (favoritesNav) {
+
+        favoritesNav.addEventListener(
+            "click",
+            function () {
+
+                showFavoritesOnly =
+                    true;
+
+                renderSongList();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Library Navigation
+    ----------------------------------------- */
+
+    const libraryNav =
+        document.getElementById(
+            "libraryNav"
+        );
+
+
+    if (libraryNav) {
+
+        libraryNav.addEventListener(
+            "click",
+            function () {
+
+                showFavoritesOnly =
+                    false;
+
+                renderSongList();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Extra Shuffle Button
+    ----------------------------------------- */
+
+    const extraShuffle =
+        document.getElementById(
+            "extraShuffle"
+        );
+
+
+    if (extraShuffle) {
+
+        extraShuffle.addEventListener(
+            "click",
+            function () {
+
+                shuffleButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Extra Repeat Button
+    ----------------------------------------- */
+
+    const extraRepeat =
+        document.getElementById(
+            "extraRepeat"
+        );
+
+
+    if (extraRepeat) {
+
+        extraRepeat.addEventListener(
+            "click",
+            function () {
+
+                repeatButton.click();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       Update Bottom Player
+    ----------------------------------------- */
+
+    function updateBottomPlayer() {
+
+        const bottomTitle =
+            document.getElementById(
+                "bottomSongTitle"
+            );
+
+        const bottomArtist =
+            document.getElementById(
+                "bottomArtistName"
+            );
+
+        if (!bottomTitle || !bottomArtist) {
+            return;
+        }
+
+
+        bottomTitle.textContent =
+            songTitle.textContent;
+
+
+        bottomArtist.textContent =
+            artistName.textContent;
+
+
+        const song =
+            savedSongs.find(
+                function (item) {
+
+                    return item.id ===
+                        currentSongId;
+
+                }
+            );
+
+
+        if (
+            song &&
+            song.cover
+        ) {
+
+            const url =
+                URL.createObjectURL(
+                    song.cover
+                );
+
+
+            const bottomImage =
+                document.getElementById(
+                    "bottomCoverImage"
+                );
+
+
+            if (bottomImage) {
+
+                bottomImage.src =
+                    url;
+
+                bottomImage.style.display =
+                    "block";
+
+            }
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       Watch Player Changes
+    ----------------------------------------- */
+
+    audioPlayer.addEventListener(
+        "loadedmetadata",
+        function () {
+
+            updateBottomPlayer();
+
+        }
+    );
+
+
+    audioPlayer.addEventListener(
+        "play",
+        function () {
+
+            updateBottomPlayer();
+
+            if (bottomPlay) {
+
+                bottomPlay.textContent =
+                    "⏸";
+
+            }
+
+        }
+    );
+
+
+    audioPlayer.addEventListener(
+        "pause",
+        function () {
+
+            if (bottomPlay) {
+
+                bottomPlay.textContent =
+                    "▶";
+
+            }
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       Update Sidebar Player
+    ----------------------------------------- */
+
+    audioPlayer.addEventListener(
+        "loadedmetadata",
+        function () {
+
+            const sideTitle =
+                document.getElementById(
+                    "sideSongTitle"
+                );
+
+            const sideArtist =
+                document.getElementById(
+                    "sideArtistName"
+                );
+
+            if (sideTitle) {
+
+                sideTitle.textContent =
+                    songTitle.textContent;
+
+            }
+
+            if (sideArtist) {
+
+                sideArtist.textContent =
+                    artistName.textContent;
+
+            }
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       Theme Button
+    ----------------------------------------- */
+
+    const themeButton =
+        document.getElementById(
+            "themeButton"
+        );
+
+
+    if (themeButton) {
+
+        themeButton.addEventListener(
+            "click",
+            function () {
+
+                document.body.classList.toggle(
+                    "soft-dark"
+                );
+
+            }
+        );
+
+    }
+
+
+});
