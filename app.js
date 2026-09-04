@@ -2724,3 +2724,260 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+/* =========================================
+   STEP 10 — REAL AUDIO EQUALIZER
+========================================= */
+
+(function () {
+
+    let audioContext = null;
+    let sourceNode = null;
+
+    let bassFilter = null;
+    let midFilter = null;
+    let trebleFilter = null;
+
+
+    function setupAudioEngine() {
+
+        if (audioContext) {
+            return;
+        }
+
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+
+        if (!AudioContext) {
+
+            console.warn(
+                "Web Audio API is not supported."
+            );
+
+            return;
+        }
+
+
+        audioContext =
+            new AudioContext();
+
+
+        sourceNode =
+            audioContext.createMediaElementSource(
+                audioPlayer
+            );
+
+
+        /* Bass */
+
+        bassFilter =
+            audioContext.createBiquadFilter();
+
+        bassFilter.type =
+            "lowshelf";
+
+        bassFilter.frequency.value =
+            200;
+
+        bassFilter.gain.value =
+            0;
+
+
+        /* Mid */
+
+        midFilter =
+            audioContext.createBiquadFilter();
+
+        midFilter.type =
+            "peaking";
+
+        midFilter.frequency.value =
+            1000;
+
+        midFilter.Q.value =
+            1;
+
+        midFilter.gain.value =
+            0;
+
+
+        /* Treble */
+
+        trebleFilter =
+            audioContext.createBiquadFilter();
+
+        trebleFilter.type =
+            "highshelf";
+
+        trebleFilter.frequency.value =
+            4000;
+
+        trebleFilter.gain.value =
+            0;
+
+
+        /* Connect */
+
+        sourceNode
+            .connect(bassFilter)
+            .connect(midFilter)
+            .connect(trebleFilter)
+            .connect(audioContext.destination);
+
+    }
+
+
+    function applyPreset(preset) {
+
+        setupAudioEngine();
+
+
+        if (!audioContext) {
+            return;
+        }
+
+
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            audioContext.resume();
+
+        }
+
+
+        let bass = 0;
+        let mid = 0;
+        let treble = 0;
+
+
+        switch (preset) {
+
+            case "normal":
+
+                bass = 0;
+                mid = 0;
+                treble = 0;
+
+                break;
+
+
+            case "bass":
+
+                bass = 8;
+                mid = 2;
+                treble = 3;
+
+                break;
+
+
+            case "vocal":
+
+                bass = -2;
+                mid = 7;
+                treble = 3;
+
+                break;
+
+
+            case "soft":
+
+                bass = 2;
+                mid = -2;
+                treble = -3;
+
+                break;
+
+
+            case "rock":
+
+                bass = 6;
+                mid = -1;
+                treble = 6;
+
+                break;
+
+
+            case "romantic":
+
+                bass = 4;
+                mid = 3;
+                treble = 4;
+
+                break;
+
+        }
+
+
+        bassFilter.gain.value =
+            bass;
+
+        midFilter.gain.value =
+            mid;
+
+        trebleFilter.gain.value =
+            treble;
+
+    }
+
+
+    /* -----------------------------------------
+       Connect Equalizer Presets
+    ----------------------------------------- */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    "[data-preset]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const preset =
+                button.dataset.preset;
+
+
+            applyPreset(
+                preset
+            );
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       Initialize on first play
+    ----------------------------------------- */
+
+    audioPlayer.addEventListener(
+        "play",
+        function () {
+
+            setupAudioEngine();
+
+            if (
+                audioContext &&
+                audioContext.state ===
+                "suspended"
+            ) {
+
+                audioContext.resume();
+
+            }
+
+        },
+        { once: false }
+    );
+
+})();
