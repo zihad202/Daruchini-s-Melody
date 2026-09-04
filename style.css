@@ -2574,3 +2574,238 @@ body {
         transform: rotate(-13deg) translateY(-8px);
     }
 }
+
+/* =========================================
+   STEP 10 — EQUALIZER GLASS PANEL
+========================================= */
+
+#equalizerPanel {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(70, 20, 45, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity .3s ease,
+        visibility .3s ease;
+
+    z-index: 9999;
+}
+
+#equalizerPanel.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+#equalizerPanel > div,
+.eq-header,
+.eq-presets {
+    position: relative;
+}
+
+
+/* Main glass card */
+
+#equalizerPanel {
+    --eq-pink: #ef3f82;
+    --eq-light: #fff0f6;
+}
+
+
+/* Header */
+
+.eq-header {
+    width: min(430px, 100%);
+
+    margin: 0 auto;
+
+    padding: 22px 22px 15px;
+
+    background: rgba(255,255,255,.94);
+
+    border-radius: 28px 28px 0 0;
+
+    box-shadow:
+        0 -20px 60px rgba(140,45,85,.15);
+}
+
+.eq-header strong {
+    display: block;
+
+    font-size: 20px;
+
+    color: #54263a;
+}
+
+.eq-header small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #a27b8c;
+
+    font-size: 12px;
+}
+
+
+/* Close */
+
+#closeEqualizer {
+    position: absolute;
+
+    top: 17px;
+    right: 18px;
+
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #fff0f6;
+
+    color: #ef3f82;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+#closeEqualizer:hover {
+    transform: rotate(90deg);
+}
+
+
+/* Preset container */
+
+.eq-presets {
+    width: min(430px, 100%);
+
+    margin: 0 auto;
+
+    padding: 10px 22px 25px;
+
+    background: rgba(255,255,255,.94);
+
+    border-radius: 0 0 28px 28px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    box-shadow:
+        0 25px 70px rgba(140,45,85,.20);
+}
+
+
+/* Preset buttons */
+
+.eq-presets button {
+    min-height: 90px;
+
+    border: 1px solid rgba(239,63,130,.08);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff8fb,
+            #ffeaf2
+        );
+
+    color: #7d5064;
+
+    cursor: pointer;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    font-size: 25px;
+
+    box-shadow:
+        0 8px 20px rgba(180,70,110,.06);
+}
+
+.eq-presets button span {
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.eq-presets button:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(239,63,130,.22);
+
+    box-shadow:
+        0 14px 28px
+        rgba(180,70,110,.12);
+}
+
+
+/* Active preset */
+
+.eq-presets button.active {
+    background:
+        linear-gradient(
+            135deg,
+            #ef3f82,
+            #ff78aa
+        );
+
+    color: white;
+
+    border-color: transparent;
+
+    box-shadow:
+        0 12px 28px
+        rgba(239,63,130,.28);
+}
+
+
+/* Mobile */
+
+@media (max-width: 520px) {
+
+    .eq-presets {
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 10px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .eq-header {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+}
