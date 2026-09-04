@@ -763,7 +763,54 @@ audioPlayer.addEventListener(
 =============================== */
 
 function renderSongList() {
+// =========================================
+// STEP 12 — SEARCH FILTER
+// =========================================
 
+const searchQuery =
+    (window.musicSearchQuery || "")
+        .trim()
+        .toLowerCase();
+
+let songsToRender =
+    [...savedSongs];
+
+
+// Favorites filter
+if (showFavoritesOnly) {
+
+    songsToRender =
+        songsToRender.filter(
+            song => song.favorite === true
+        );
+
+}
+
+
+// Search filter
+if (searchQuery) {
+
+    songsToRender =
+        songsToRender.filter(
+            song => {
+
+                const name =
+                    (song.name || "")
+                        .toLowerCase();
+
+                const artist =
+                    (song.artist || "")
+                        .toLowerCase();
+
+                return (
+                    name.includes(searchQuery) ||
+                    artist.includes(searchQuery)
+                );
+
+            }
+        );
+
+}
     songList.innerHTML = "";
 
 
@@ -3223,5 +3270,143 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
     );
+
+})();
+
+/* =========================================
+   STEP 12 — SEARCH + FAVORITES
+========================================= */
+
+(function () {
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const librarySearchButton =
+        document.getElementById(
+            "librarySearchButton"
+        );
+
+    const favoriteFilter =
+        document.getElementById(
+            "favoriteFilter"
+        );
+
+
+    /* =====================================
+       SEARCH
+    ===================================== */
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                /*
+                 * Keep the search text available
+                 * to the existing renderer.
+                 */
+
+                window.musicSearchQuery =
+                    query;
+
+
+                if (
+                    typeof renderSongList ===
+                    "function"
+                ) {
+
+                    renderSongList();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       SEARCH BUTTON
+    ===================================== */
+
+    if (librarySearchButton) {
+
+        librarySearchButton.addEventListener(
+            "click",
+            function () {
+
+                if (!searchInput) return;
+
+                searchInput.focus();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       HEADER FAVORITE
+    ===================================== */
+
+    if (favoriteFilter) {
+
+        favoriteFilter.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    typeof showFavoritesOnly !==
+                    "undefined"
+                ) {
+
+                    showFavoritesOnly =
+                        !showFavoritesOnly;
+
+                    renderSongList();
+
+                }
+
+                this.classList.toggle(
+                    "active",
+                    showFavoritesOnly
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       SEARCH + FAVORITE RENDER PATCH
+    ===================================== */
+
+    const originalRender =
+        window.renderSongList;
+
+
+    if (
+        typeof originalRender ===
+        "function"
+    ) {
+
+        window.renderSongList =
+            function () {
+
+                originalRender();
+
+            };
+
+    }
+
 
 })();
