@@ -2981,3 +2981,247 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 })();
+
+
+/* =========================================
+   STEP 11 — SLEEP TIMER + AUTO PLAY
+========================================= */
+
+(function () {
+
+    let sleepTimerId = null;
+
+    const sleepTimer =
+        document.getElementById("sleepTimer");
+
+
+    /* =====================================
+       SLEEP TIMER
+    ===================================== */
+
+    if (sleepTimer) {
+
+        sleepTimer.addEventListener(
+            "change",
+            function () {
+
+                /* Cancel previous timer */
+
+                if (sleepTimerId) {
+
+                    clearTimeout(
+                        sleepTimerId
+                    );
+
+                    sleepTimerId = null;
+                }
+
+
+                const minutes =
+                    Number(this.value);
+
+
+                /* Off */
+
+                if (
+                    !minutes ||
+                    minutes <= 0
+                ) {
+
+                    return;
+                }
+
+
+                /* Start timer */
+
+                sleepTimerId =
+                    setTimeout(
+                        function () {
+
+                            audioPlayer.pause();
+
+                            audioPlayer.currentTime =
+                                0;
+
+                            sleepTimer.value =
+                                "0";
+
+                            sleepTimerId =
+                                null;
+
+                        },
+                        minutes * 60 * 1000
+                    );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================
+       AUTO NEXT SONG
+    ===================================== */
+
+    audioPlayer.addEventListener(
+        "ended",
+        function () {
+
+            if (
+                !savedSongs ||
+                savedSongs.length === 0
+            ) {
+
+                return;
+            }
+
+
+            /* --------------------------------
+               REPEAT ONE
+            -------------------------------- */
+
+            if (
+                typeof repeatMode !==
+                "undefined" &&
+                repeatMode === "one"
+            ) {
+
+                audioPlayer.currentTime =
+                    0;
+
+                audioPlayer.play();
+
+                return;
+            }
+
+
+            /* --------------------------------
+               SHUFFLE
+            -------------------------------- */
+
+            if (
+                typeof shuffleMode !==
+                "undefined" &&
+                shuffleMode
+            ) {
+
+                const availableSongs =
+                    savedSongs.filter(
+                        song =>
+                            song.id !==
+                            currentSongId
+                    );
+
+
+                if (
+                    availableSongs.length
+                ) {
+
+                    const randomIndex =
+                        Math.floor(
+                            Math.random() *
+                            availableSongs.length
+                        );
+
+
+                    const randomSong =
+                        availableSongs[
+                            randomIndex
+                        ];
+
+
+                    if (
+                        typeof playSongById ===
+                        "function"
+                    ) {
+
+                        playSongById(
+                            randomSong.id
+                        );
+
+                    }
+
+                }
+
+                return;
+            }
+
+
+            /* --------------------------------
+               NORMAL NEXT SONG
+            -------------------------------- */
+
+            const currentIndex =
+                savedSongs.findIndex(
+                    song =>
+                        song.id ===
+                        currentSongId
+                );
+
+
+            if (
+                currentIndex === -1
+            ) {
+
+                return;
+            }
+
+
+            let nextIndex =
+                currentIndex + 1;
+
+
+            /* --------------------------------
+               END OF LIBRARY
+            -------------------------------- */
+
+            if (
+                nextIndex >=
+                savedSongs.length
+            ) {
+
+                /* Repeat All */
+
+                if (
+                    typeof repeatMode !==
+                    "undefined" &&
+                    repeatMode === "all"
+                ) {
+
+                    nextIndex = 0;
+
+                } else {
+
+                    /*
+                     * No repeat:
+                     * stop after last song
+                     */
+
+                    return;
+                }
+
+            }
+
+
+            const nextSong =
+                savedSongs[
+                    nextIndex
+                ];
+
+
+            if (
+                nextSong &&
+                typeof playSongById ===
+                "function"
+            ) {
+
+                playSongById(
+                    nextSong.id
+                );
+
+            }
+
+        }
+    );
+
+})();
