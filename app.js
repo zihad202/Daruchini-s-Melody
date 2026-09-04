@@ -2552,3 +2552,175 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 });           
+
+/* =========================================
+   STEP 10 — EQUALIZER PANEL
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const equalizerButton =
+        document.getElementById("equalizerButton");
+
+    if (!equalizerButton) return;
+
+
+    /* Create Equalizer Panel */
+
+    const panel = document.createElement("div");
+
+    panel.id = "equalizerPanel";
+
+    panel.innerHTML = `
+        <div class="eq-header">
+            <div>
+                <strong>Sound & Equalizer</strong>
+                <small>Choose your mood</small>
+            </div>
+
+            <button id="closeEqualizer">
+                ×
+            </button>
+        </div>
+
+        <div class="eq-presets">
+
+            <button data-preset="normal">
+                🎵
+                <span>Normal</span>
+            </button>
+
+            <button data-preset="bass">
+                🔥
+                <span>Bass</span>
+            </button>
+
+            <button data-preset="vocal">
+                🎤
+                <span>Vocal</span>
+            </button>
+
+            <button data-preset="soft">
+                🌙
+                <span>Soft</span>
+            </button>
+
+            <button data-preset="rock">
+                🎸
+                <span>Rock</span>
+            </button>
+
+            <button data-preset="romantic">
+                💗
+                <span>Romantic</span>
+            </button>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(panel);
+
+
+    /* Open */
+
+    equalizerButton.addEventListener(
+        "click",
+        function () {
+
+            panel.classList.add("show");
+
+        }
+    );
+
+
+    /* Close */
+
+    document
+        .getElementById("closeEqualizer")
+        .addEventListener(
+            "click",
+            function () {
+
+                panel.classList.remove("show");
+
+            }
+        );
+
+
+    /* Close when clicking outside */
+
+    panel.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === panel) {
+
+                panel.classList.remove("show");
+
+            }
+
+        }
+    );
+
+
+    /* Presets */
+
+    const presetButtons =
+        panel.querySelectorAll(
+            "[data-preset]"
+        );
+
+
+    presetButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    presetButtons.forEach(
+                        btn =>
+                            btn.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    const preset =
+                        this.dataset.preset;
+
+
+                    applyEqualizerPreset(
+                        preset
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* Equalizer logic */
+
+    function applyEqualizerPreset(preset) {
+
+        /*
+         * Browser audio processing will be
+         * connected in the next part.
+         */
+
+        console.log(
+            "Equalizer preset:",
+            preset
+        );
+
+    }
+
+});
