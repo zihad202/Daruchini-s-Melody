@@ -3410,3 +3410,349 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 })();
+
+/* =========================================
+   STEP 13 — PLAYLIST SYSTEM
+========================================= */
+
+(function () {
+
+    const createButton =
+        document.getElementById("createPlaylistButton");
+
+    const modal =
+        document.getElementById("playlistModal");
+
+    const closeButton =
+        document.getElementById("closePlaylistModal");
+
+    const saveButton =
+        document.getElementById("savePlaylistButton");
+
+    const nameInput =
+        document.getElementById("playlistNameInput");
+
+    const playlistsNav =
+        document.getElementById("playlistsNav");
+
+
+    /* -----------------------------------------
+       LOAD PLAYLISTS
+    ----------------------------------------- */
+
+    let myPlaylists =
+        JSON.parse(
+            localStorage.getItem("myPlaylists") || "[]"
+        );
+
+
+    /* -----------------------------------------
+       SAVE PLAYLISTS
+    ----------------------------------------- */
+
+    function savePlaylists() {
+
+        localStorage.setItem(
+            "myPlaylists",
+            JSON.stringify(myPlaylists)
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       OPEN MODAL
+    ----------------------------------------- */
+
+    if (createButton) {
+
+        createButton.addEventListener(
+            "click",
+            function () {
+
+                modal.classList.add("show");
+
+                nameInput.value = "";
+
+                setTimeout(
+                    () => nameInput.focus(),
+                    150
+                );
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       CLOSE MODAL
+    ----------------------------------------- */
+
+    function closeModal() {
+
+        modal.classList.remove("show");
+
+    }
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeModal
+        );
+
+    }
+
+
+    if (modal) {
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target === modal
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       CREATE PLAYLIST
+    ----------------------------------------- */
+
+    if (saveButton) {
+
+        saveButton.addEventListener(
+            "click",
+            function () {
+
+                const name =
+                    nameInput.value.trim();
+
+
+                if (!name) {
+
+                    nameInput.focus();
+
+                    return;
+                }
+
+
+                /* Prevent duplicate names */
+
+                const alreadyExists =
+                    myPlaylists.some(
+                        playlist =>
+                            playlist.name
+                                .toLowerCase() ===
+                            name.toLowerCase()
+                    );
+
+
+                if (alreadyExists) {
+
+                    alert(
+                        "This playlist already exists."
+                    );
+
+                    return;
+                }
+
+
+                const playlist = {
+
+                    id:
+                        Date.now().toString(),
+
+                    name: name,
+
+                    songs: [],
+
+                    createdAt:
+                        new Date().toISOString()
+
+                };
+
+
+                myPlaylists.push(
+                    playlist
+                );
+
+
+                savePlaylists();
+
+                renderPlaylists();
+
+                closeModal();
+
+            }
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       RENDER PLAYLISTS
+    ----------------------------------------- */
+
+    function renderPlaylists() {
+
+        const oldList =
+            document.getElementById(
+                "playlistItems"
+            );
+
+
+        if (oldList) {
+            oldList.remove();
+        }
+
+
+        const container =
+            document.createElement("div");
+
+        container.id =
+            "playlistItems";
+
+        container.className =
+            "playlist-items";
+
+
+        myPlaylists.forEach(
+            function (playlist) {
+
+                const item =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                item.className =
+                    "playlist-item";
+
+
+                item.type =
+                    "button";
+
+
+                item.innerHTML = `
+                    <span class="playlist-item-icon">
+                        ♫
+                    </span>
+
+                    <span class="playlist-item-info">
+
+                        <strong>
+                            ${escapePlaylistText(
+                                playlist.name
+                            )}
+                        </strong>
+
+                        <small>
+                            ${playlist.songs.length}
+                            ${playlist.songs.length === 1
+                                ? "song"
+                                : "songs"}
+                        </small>
+
+                    </span>
+                `;
+
+
+                item.addEventListener(
+                    "click",
+                    function () {
+
+                        openPlaylist(
+                            playlist.id
+                        );
+
+                    }
+                );
+
+
+                container.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        if (playlistsNav) {
+
+            playlistsNav
+                .parentElement
+                .appendChild(
+                    container
+                );
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       SAFE TEXT
+    ----------------------------------------- */
+
+    function escapePlaylistText(text) {
+
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* -----------------------------------------
+       OPEN PLAYLIST
+    ----------------------------------------- */
+
+    function openPlaylist(
+        playlistId
+    ) {
+
+        const playlist =
+            myPlaylists.find(
+                p => p.id === playlistId
+            );
+
+
+        if (!playlist) return;
+
+
+        console.log(
+            "Opening playlist:",
+            playlist.name
+        );
+
+
+        /*
+         * Full playlist playback UI
+         * will be connected in the next step.
+         */
+
+    }
+
+
+    /* -----------------------------------------
+       INITIAL RENDER
+    ----------------------------------------- */
+
+    renderPlaylists();
+
+})();
