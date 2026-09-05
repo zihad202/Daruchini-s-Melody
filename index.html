@@ -76,13 +76,31 @@
                 </button>
 
 
-                <button
-                    class="nav-item"
-                    type="button"
-                >
-                    <span class="nav-icon">◷</span>
-                    <span>Recent</span>
-                </button>
+                <div class="playlist-nav-section">
+
+    <div class="quick-title">
+        PLAYLISTS
+    </div>
+
+    <button
+        class="nav-item"
+        id="playlistsNav"
+        type="button"
+    >
+        <span class="nav-icon">☷</span>
+        <span>My Playlists</span>
+    </button>
+
+    <button
+        class="create-playlist-button"
+        id="createPlaylistButton"
+        type="button"
+    >
+        <span>＋</span>
+        <span>Create Playlist</span>
+    </button>
+
+                </div>
 
 
                 <button
@@ -887,7 +905,54 @@
 
 <script src="app.js"></script>
 
+<!-- =========================================
+     CREATE PLAYLIST MODAL
+========================================= -->
 
+<div
+    class="playlist-modal"
+    id="playlistModal"
+>
+
+    <div class="playlist-modal-card">
+
+        <button
+            class="playlist-modal-close"
+            id="closePlaylistModal"
+            type="button"
+        >
+            ×
+        </button>
+
+        <div class="playlist-modal-icon">
+            ♫
+        </div>
+
+        <h3>
+            Create Playlist
+        </h3>
+
+        <p>
+            Give your playlist a beautiful name
+        </p>
+
+        <input
+            type="text"
+            id="playlistNameInput"
+            placeholder="e.g. Our Memories"
+            maxlength="40"
+        >
+
+        <button
+            id="savePlaylistButton"
+            type="button"
+        >
+            Create Playlist
+        </button>
+
+    </div>
+
+</div>
 </body>
 
   </html>
