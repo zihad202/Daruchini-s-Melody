@@ -23,8 +23,66 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Sync web app with Android
+      - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Configure Android background audio
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+
+          text = manifest.read_text()
+
+          permissions = [
+              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />',
+              '    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />',
+              '    <uses-permission android:name="android.permission.WAKE_LOCK" />'
+          ]
+
+          for permission in permissions:
+              if permission.strip() not in text:
+                  text = text.replace(
+                      '<manifest ',
+                      '<manifest ',
+                      1
+                  )
+                  pos = text.find('>', text.find('<manifest'))
+                  text = text[:pos + 1] + '\n' + permission + text[pos + 1:]
+
+          service = '''        <service
+              android:name="us.mediagrid.capacitorjs.plugins.nativeaudio.AudioPlayerService"
+              android:description="@string/audio_player_service_description"
+              android:foregroundServiceType="mediaPlayback"
+              android:exported="true">
+              <intent-filter>
+                  <action android:name="androidx.media3.session.MediaSessionService"/>
+              </intent-filter>
+          </service>
+          '''
+
+          if 'us.mediagrid.capacitorjs.plugins.nativeaudio.AudioPlayerService' not in text:
+              text = text.replace(
+                  '</application>',
+                  service + '    </application>'
+              )
+
+          manifest.write_text(text)
+          PY
+
+      - name: Add audio service description
+        run: |
+          mkdir -p android/app/src/main/res/values
+
+          cat > android/app/src/main/res/values/audio_service_strings.xml <<'EOF'
+          <resources>
+              <string name="audio_player_service_description">
+                  Allows for audio to play in the background.
+              </string>
+          </resources>
+          EOF
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -39,5 +97,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Daruchinis-Melody-debug
+          name: Daruchinis-Melody-background-audio
           path: android/app/build/outputs/apk/debug/app-debug.apk
