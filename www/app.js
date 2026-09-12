@@ -7,9 +7,155 @@
 /* =====================================================
    ELEMENTS
 ===================================================== */
+const { Filesystem, Directory } = Capacitor.Plugins;
 
+const NATIVE_MUSIC_DIR = "music";
 const audio = document.getElementById("audioPlayer");
+const AudioPlayer = Capacitor.Plugins.AudioPlayer;
 
+const NATIVE_AUDIO_ID = "daruchini-main-player";
+
+let nativeAudioReady = false;
+let nativeAudioInitialized = false;
+
+let syncingFromNative = false;
+let syncingToNative = false;
+async function setupNativeAudio(song) {
+
+    if (!AudioPlayer || !song) {
+        console.log("Native Audio plugin not available.");
+        return false;
+    }
+
+    try {
+
+        const audioUri = await getNativeSongUri(song);
+
+        console.log("Native audio URI:", audioUri);
+
+        if (!nativeAudioInitialized) {
+
+            await AudioPlayer.onAudioReady(
+                { audioId: NATIVE_AUDIO_ID },
+                () => {
+                    console.log("Native audio ready");
+                    nativeAudioReady = true;
+                }
+            );
+
+            await AudioPlayer.onPlaybackStatusChange(
+                { audioId: NATIVE_AUDIO_ID },
+                async (result) => {
+
+                    console.log("Native playback status:", result);
+
+                    if (syncingToNative) {
+                        return;
+                    }
+
+                    syncingFromNative = true;
+
+                    try {
+
+                        if (result.status === "playing") {
+
+                            if (audio.paused) {
+                                await audio.play().catch(() => {});
+                            }
+
+                        } else if (result.status === "paused") {
+
+                            if (!audio.paused) {
+                                audio.pause();
+                            }
+
+                        }
+
+                    } finally {
+
+                        setTimeout(() => {
+                            syncingFromNative = false;
+                        }, 50);
+                    }
+                }
+            );
+
+            await AudioPlayer.onAudioEnd(
+                { audioId: NATIVE_AUDIO_ID },
+                async () => {
+
+                    console.log("Native audio ended");
+
+                    if (audio.paused === false) {
+                        return;
+                    }
+
+                    await nextSong();
+                }
+            );
+
+            await AudioPlayer.create({
+
+                audioId: NATIVE_AUDIO_ID,
+
+                audioSource: audioUri,
+
+                friendlyTitle: song.title || "Unknown",
+
+                albumTitle: song.album || "My Music",
+
+                artistName: song.artist || "Unknown Artist",
+
+                useForNotification: true,
+
+                isBackgroundMusic: false,
+
+                loop: false,
+
+                showSeekForward: true,
+
+                showSeekBackward: true
+            });
+
+            await AudioPlayer.initialize({
+                audioId: NATIVE_AUDIO_ID
+            });
+
+            nativeAudioInitialized = true;
+
+            console.log("Native notification player initialized.");
+
+        } else {
+
+            await AudioPlayer.changeAudioSource({
+                audioId: NATIVE_AUDIO_ID,
+                source: audioUri
+            });
+
+            await AudioPlayer.changeMetadata({
+
+                audioId: NATIVE_AUDIO_ID,
+
+                friendlyTitle: song.title || "Unknown",
+
+                albumTitle: song.album || "My Music",
+
+                artistName: song.artist || "Unknown Artist"
+            });
+        }
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Native audio setup failed:",
+            error
+        );
+
+        return false;
+    }
+}
 const fileInput = document.getElementById("fileInput");
 const importBtn = document.getElementById("importBtn");
 
@@ -290,7 +436,81 @@ let currentIndex = -1;
 let menuSongIndex = -1;
 
 let selectedPlaylistSong = -1;
+async function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
 
+        reader.onloadend = () => {
+            const result = reader.result;
+            const base64 = result.split(",")[1];
+            resolve(base64);
+        };
+
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+
+function getFileExtension(song) {
+    const name = song.fileName || song.title || "audio.mp3";
+
+    const match = name.match(/\.([a-zA-Z0-9]+)$/);
+
+    return match ? match[1].toLowerCase() : "mp3";
+}
+
+
+async function saveSongToNativeStorage(song) {
+
+    if (!song || !song.audioBlob) {
+        throw new Error("Song audio file not found.");
+    }
+
+    const extension = getFileExtension(song);
+
+    const fileName = `${NATIVE_MUSIC_DIR}/${song.id}.${extension}`;
+
+    try {
+
+        const existing = await Filesystem.stat({
+            path: fileName,
+            directory: Directory.Data
+        });
+
+        if (existing) {
+            return fileName;
+        }
+
+    } catch (error) {
+        // File does not exist — continue
+    }
+
+
+    const base64 = await blobToBase64(song.audioBlob);
+
+    await Filesystem.writeFile({
+        path: fileName,
+        data: base64,
+        directory: Directory.Data,
+        recursive: true
+    });
+
+    return fileName;
+}
+
+
+async function getNativeSongUri(song) {
+
+    const path = await saveSongToNativeStorage(song);
+
+    const result = await Filesystem.getUri({
+        path: path,
+        directory: Directory.Data
+    });
+
+    return result.uri;
+}
 let currentPlaylistId = null;
 
 let currentObjectURL = null;
@@ -1430,7 +1650,13 @@ function playSong(
 
     const song =
         songs[currentIndex];
-
+setupNativeAudio(song)
+    .catch(error => {
+        console.error(
+            "Native audio setup failed:",
+            error
+        );
+    });
 
     if (updateQueue) {
 
