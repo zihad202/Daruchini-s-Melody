@@ -1,1 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d0910">
 
+    <title>Bloom Music</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="top-header">
+        <div>
+            <p class="small-title">Her🫶 voice is one of my favorite kind of peace. 🤍</p>
+            <h1 id="pageTitle">Heart’s Melody 🌸</h1>
+        </div>
+
+        <button class="icon-btn" id="sortBtn">↕</button>
+    </header>
+
+
+    <div class="search-box">
+        <span>⌕</span>
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search songs, artists..."
+        >
+    </div>
+
+
+    <section class="quick-actions">
+
+        <button class="action-card" id="importBtn">
+            <span class="action-icon">＋</span>
+            <span>
+                <strong>Import Music</strong>
+                <small>Add songs to library</small>
+            </span>
+        </button>
+
+        <button class="action-card" id="playlistBtn">
+            <span class="action-icon">♡</span>
+            <span>
+                <strong>New Playlist</strong>
+                <small>Create collection</small>
+            </span>
+        </button>
+
+    </section>
+
+    <input
+        type="file"
+        id="fileInput"
+        accept="audio/*"
+        multiple
+        hidden
+    >
+
+
+    <section class="section" id="recentSection">
+
+        <div class="section-heading">
+            <h2>Recently Added</h2>
+            <button id="seeAllBtn">See all</button>
+        </div>
+
+        <div class="recent-list" id="recentList"></div>
+
+    </section>
+
+
+    <section class="section" id="playlistSection">
+
+        <div class="section-heading">
+            <h2>Playlists</h2>
+            <span class="song-count" id="playlistCount">0</span>
+        </div>
+
+        <div class="playlist-list" id="playlistList"></div>
+
+    </section>
+
+
+    <section class="section">
+
+        <div class="section-heading">
+            <h2 id="listTitle">All Songs</h2>
+            <span class="song-count" id="songCount">0 songs</span>
+        </div>
+
+        <div class="song-list" id="songList"></div>
+
+    </section>
+
+
+    <!-- MINI PLAYER -->
+
+    <div class="mini-player" id="miniPlayer">
+
+        <div class="mini-cover" id="miniCover">♪</div>
+
+        <div class="mini-info">
+            <strong id="miniTitle">No song selected</strong>
+            <span id="miniArtist">Choose a song</span>
+        </div>
+
+        <button class="mini-previous" id="miniPrevious">⏮</button>
+
+        <button class="mini-play" id="miniPlayBtn">▶</button>
+
+        <button class="mini-next" id="miniNext">⏭</button>
+
+    </div>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+        <button class="nav-item active" data-page="home">
+            <span>⌂</span>
+            <small>Home</small>
+        </button>
+
+        <button class="nav-item" data-page="songs">
+            <span>♫</span>
+            <small>Songs</small>
+        </button>
+
+        <button class="nav-item" data-page="favorites">
+            <span>♡</span>
+            <small>Favorites</small>
+        </button>
+
+        <button class="nav-item" data-page="playlists">
+            <span>☷</span>
+            <small>Playlists</small>
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- NOW PLAYING -->
+<!-- ================================================= -->
+
+<div class="player-screen" id="playerScreen">
+
+    <div class="player-top">
+
+        <button class="back-btn" id="closePlayer">↓</button>
+
+        <span>NOW PLAYING</span>
+
+        <button class="icon-btn" id="playerQueueBtn">☷</button>
+
+    </div>
+
+
+    <div class="player-content">
+
+        <div class="artwork-wrap">
+
+            <div class="flower flower-1">✿</div>
+            <div class="flower flower-2">❀</div>
+            <div class="flower flower-3">✿</div>
+            <div class="flower flower-4">❀</div>
+
+            <div class="big-cover" id="bigCover">♪</div>
+
+        </div>
+
+
+        <canvas id="visualizer"></canvas>
+
+
+        <div class="player-song-info">
+
+            <h1 id="playerTitle">No song selected</h1>
+
+            <p id="playerArtist">Choose a song</p>
+
+        </div>
+
+
+        <div class="progress-area">
+
+            <input
+                type="range"
+                id="progressBar"
+                min="0"
+                max="100"
+                value="0"
+            >
+
+            <div class="time-row">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+
+        </div>
+
+
+        <div class="main-controls">
+
+            <button id="shuffleBtn">🔀</button>
+
+            <button id="previousBtn">⏮</button>
+
+            <button class="skip-btn" id="back5Btn">
+                ↶<small>5</small>
+            </button>
+
+            <button class="play-main" id="playBtn">▶</button>
+
+            <button class="skip-btn" id="forward5Btn">
+                <small>5</small>↷
+            </button>
+
+            <button id="nextBtn">⏭</button>
+
+            <button id="repeatBtn">🔁</button>
+
+        </div>
+
+
+        <!-- VOLUME -->
+
+        <div class="volume-area">
+
+            <button id="muteBtn">🔊</button>
+
+            <input
+                type="range"
+                id="volumeBar"
+                min="0"
+                max="1"
+                step="0.01"
+                value="1"
+            >
+
+        </div>
+
+
+        <div class="player-extra">
+
+            <button id="favoriteBtn">
+                ♡ Favorite
+            </button>
+
+            <button id="editBtn">
+                ✎ Edit
+            </button>
+
+            <button id="addPlaylistFromPlayer">
+                ＋ Playlist
+            </button>
+
+            <button id="openQueueBtn">
+                ☷ Queue
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- QUEUE -->
+<!-- ================================================= -->
+
+<div class="queue-screen" id="queueScreen">
+
+    <div class="queue-box">
+
+        <div class="queue-header">
+
+            <div>
+                <small>PLAYBACK</small>
+                <h2>Up Next</h2>
+            </div>
+
+            <button id="closeQueue">×</button>
+
+        </div>
+
+        <div id="queueList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- SONG MENU -->
+<!-- ================================================= -->
+
+<div class="bottom-sheet" id="songMenu">
+
+    <div class="sheet-box">
+
+        <div class="sheet-handle"></div>
+
+        <h3 id="menuSongTitle">Song</h3>
+
+        <button id="menuEdit">✎ Edit song</button>
+
+        <button id="menuFavorite">♡ Add to favorites</button>
+
+        <button id="menuPlaylist">＋ Add to playlist</button>
+
+        <button class="danger" id="menuDelete">
+            🗑 Delete song
+        </button>
+
+        <button id="menuClose">Cancel</button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- EDIT -->
+<!-- ================================================= -->
+
+<div class="modal" id="editModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2>Edit Song</h2>
+            <button id="closeEdit">×</button>
+        </div>
+
+        <label>
+            Song name
+            <input type="text" id="editTitle">
+        </label>
+
+        <label>
+            Artist
+            <input type="text" id="editArtist">
+        </label>
+
+        <label>
+            Album
+            <input type="text" id="editAlbum">
+        </label>
+
+        <label>
+            Cover image
+            <input type="file" id="editCover" accept="image/*">
+        </label>
+
+        <button class="save-btn" id="saveEdit">
+            Save Changes
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- CREATE PLAYLIST -->
+<!-- ================================================= -->
+
+<div class="modal" id="playlistModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2>Create Playlist</h2>
+            <button id="closePlaylist">×</button>
+        </div>
+
+        <label>
+            Playlist name
+            <input
+                type="text"
+                id="playlistName"
+                placeholder="My favorite songs"
+            >
+        </label>
+
+        <button class="save-btn" id="createPlaylist">
+            Create Playlist
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- PLAYLIST SELECTOR -->
+<!-- ================================================= -->
+
+<div class="modal" id="playlistSelector">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h2>Add to Playlist</h2>
+            <button id="closeSelector">×</button>
+        </div>
+
+        <div class="selector-list" id="selectorList"></div>
+
+        <button
+            class="save-btn"
+            id="createPlaylistFromSelector"
+        >
+            ＋ Create New Playlist
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- PLAYLIST VIEW -->
+<!-- ================================================= -->
+
+<div class="playlist-screen" id="playlistScreen">
+
+    <div class="playlist-screen-top">
+
+        <button
+            class="back-btn"
+            id="closePlaylistScreen"
+        >
+            ←
+        </button>
+
+        <div>
+            <small>PLAYLIST</small>
+            <h2 id="playlistViewTitle">Playlist</h2>
+        </div>
+
+        <button
+            class="icon-btn"
+            id="playlistViewMenu"
+        >
+            ⋮
+        </button>
+
+    </div>
+
+
+    <div
+        class="playlist-view-content"
+        id="playlistViewContent"
+    ></div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- PLAYLIST MENU -->
+<!-- ================================================= -->
+
+<div class="bottom-sheet" id="playlistMenu">
+
+    <div class="sheet-box">
+
+        <div class="sheet-handle"></div>
+
+        <h3 id="playlistMenuTitle">
+            Playlist
+        </h3>
+
+        <button id="renamePlaylistBtn">
+            ✎ Rename playlist
+        </button>
+
+        <button class="danger" id="deletePlaylistBtn">
+            🗑 Delete playlist
+        </button>
+
+        <button id="closePlaylistMenu">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- SORT -->
+<!-- ================================================= -->
+
+<div class="bottom-sheet" id="sortMenu">
+
+    <div class="sheet-box">
+
+        <div class="sheet-handle"></div>
+
+        <h3>Sort Songs</h3>
+
+        <button data-sort="recent">
+            Recently Added
+        </button>
+
+        <button data-sort="title">
+            Song Name
+        </button>
+
+        <button data-sort="artist">
+            Artist
+        </button>
+
+        <button data-sort="favorite">
+            Favorites First
+        </button>
+
+        <button id="sortClose">Cancel</button>
+
+    </div>
+
+</div>
+
+
+<audio
+    id="audioPlayer"
+    preload="metadata"
+></audio>
+
+
+<script src="app.js"></script>
+
+</body>
+  </html>
