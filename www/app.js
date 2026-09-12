@@ -156,6 +156,32 @@ async function setupNativeAudio(song) {
         return false;
     }
 }
+
+async function syncNativeSeek(time) {
+
+    if (
+        !nativeAudioInitialized ||
+        syncingFromNative
+    ) {
+        return;
+    }
+
+    try {
+
+        await AudioPlayer.seek({
+            audioId: NATIVE_AUDIO_ID,
+            timeInSeconds: Math.max(0, time)
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Native seek failed:",
+            error
+        );
+
+    }
+}
 const fileInput = document.getElementById("fileInput");
 const importBtn = document.getElementById("importBtn");
 
@@ -1867,6 +1893,48 @@ audio.addEventListener(
 
         startVisualizer();
 
+
+        if (
+            nativeAudioInitialized &&
+            !syncingFromNative &&
+            !syncingToNative
+        ) {
+
+            syncingToNative = true;
+
+            AudioPlayer.play({
+                audioId: NATIVE_AUDIO_ID
+            })
+            .catch(console.error);
+
+            setTimeout(() => {
+                syncingToNative = false;
+            }, 100);
+
+        }
+
+    }
+);
+
+        startVisualizer();
+if (
+    nativeAudioInitialized &&
+    !syncingFromNative &&
+    !syncingToNative
+) {
+
+    syncingToNative = true;
+
+    AudioPlayer.play({
+        audioId: NATIVE_AUDIO_ID
+    })
+    .catch(console.error);
+
+    setTimeout(() => {
+        syncingToNative = false;
+    }, 100);
+
+}
     }
 );
 
@@ -1881,6 +1949,46 @@ audio.addEventListener(
             "playing"
         );
 
+
+        if (
+            nativeAudioInitialized &&
+            !syncingFromNative &&
+            !syncingToNative
+        ) {
+
+            syncingToNative = true;
+
+            AudioPlayer.pause({
+                audioId: NATIVE_AUDIO_ID
+            })
+            .catch(console.error);
+
+            setTimeout(() => {
+                syncingToNative = false;
+            }, 100);
+
+        }
+
+    }
+);
+if (
+    nativeAudioInitialized &&
+    !syncingFromNative &&
+    !syncingToNative
+) {
+
+    syncingToNative = true;
+
+    AudioPlayer.pause({
+        audioId: NATIVE_AUDIO_ID
+    })
+    .catch(console.error);
+
+    setTimeout(() => {
+        syncingToNative = false;
+    }, 100);
+
+                       }
     }
 );
 
@@ -2190,16 +2298,24 @@ progressBar.addEventListener(
             return;
 
 
-        audio.currentTime =
+        const seekTime =
             (
                 progressBar.value /
                 100
             ) *
             audio.duration;
 
+
+        audio.currentTime =
+            seekTime;
+
+
+        syncNativeSeek(
+            seekTime
+        );
+
     }
 );
-
 
 /* =====================================================
    SONG END
