@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
-    "@capacitor/core": "^7.4.3"
+    "@capacitor/core": "^7.4.3",
     "@mediagrid/capacitor-native-audio": "^2.0.0"
   },
   "devDependencies": {
